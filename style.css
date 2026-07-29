@@ -157,3 +157,14 @@ padding:18px;
 }
 
 }
+.song{
+    transition:.35s ease;
+}
+
+.song.playing{
+    transform:scale(1.02);
+    border:1px solid #4b7cff;
+    box-shadow:
+        0 0 18px rgba(75,124,255,.45),
+        0 0 60px rgba(75,124,255,.15);
+}
