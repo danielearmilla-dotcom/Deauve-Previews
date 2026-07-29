@@ -1,27 +1,33 @@
+const buttons = document.querySelectorAll(".play");
 const audios = document.querySelectorAll("audio");
 
-audios.forEach(audio => {
+buttons.forEach(button => {
 
-    audio.addEventListener("play", () => {
+    button.addEventListener("click", () => {
 
-        audios.forEach(other => {
-            if (other !== audio) {
-                other.pause();
-                other.currentTime = 0;
-                other.parentElement.classList.remove("playing");
+        const target = document.getElementById(button.dataset.target);
+
+        audios.forEach(audio => {
+            if (audio !== target) {
+                audio.pause();
+                audio.currentTime = 0;
             }
         });
 
-        audio.parentElement.classList.add("playing");
+        buttons.forEach(b => b.textContent = "▶ PLAY");
 
-    });
+        if (target.paused) {
+            target.play();
+            button.textContent = "❚❚ PAUSE";
+        } else {
+            target.pause();
+            button.textContent = "▶ PLAY";
+        }
 
-    audio.addEventListener("pause", () => {
-        audio.parentElement.classList.remove("playing");
-    });
+        target.onended = () => {
+            button.textContent = "▶ PLAY";
+        };
 
-    audio.addEventListener("ended", () => {
-        audio.parentElement.classList.remove("playing");
     });
 
 });
