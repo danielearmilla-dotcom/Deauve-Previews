@@ -1,18 +1,27 @@
-const players = document.querySelectorAll("audio");
+const audios = document.querySelectorAll("audio");
 
-players.forEach(player => {
+audios.forEach(audio => {
 
-    player.addEventListener("play", () => {
+    audio.addEventListener("play", () => {
 
-        players.forEach(audio => {
-
-            if(audio !== player){
-                audio.pause();
-                audio.currentTime = 0;
+        audios.forEach(other => {
+            if (other !== audio) {
+                other.pause();
+                other.currentTime = 0;
+                other.parentElement.classList.remove("playing");
             }
-
         });
 
+        audio.parentElement.classList.add("playing");
+
+    });
+
+    audio.addEventListener("pause", () => {
+        audio.parentElement.classList.remove("playing");
+    });
+
+    audio.addEventListener("ended", () => {
+        audio.parentElement.classList.remove("playing");
     });
 
 });
