@@ -1,32 +1,35 @@
-const buttons = document.querySelectorAll(".play");
 const audios = document.querySelectorAll("audio");
 
-buttons.forEach(button => {
+audios.forEach(audio => {
 
-    button.addEventListener("click", () => {
+    audio.addEventListener("play", () => {
 
-        const target = document.getElementById(button.dataset.target);
+        audios.forEach(other => {
 
-        audios.forEach(audio => {
-            if (audio !== target) {
-                audio.pause();
-                audio.currentTime = 0;
+            if (other !== audio) {
+                other.pause();
+                other.currentTime = 0;
             }
+
         });
 
-        buttons.forEach(b => b.textContent = "▶ PLAY");
+        document.querySelectorAll(".song").forEach(card=>{
+            card.classList.remove("playing");
+        });
 
-        if (target.paused) {
-            target.play();
-            button.textContent = "❚❚ PAUSE";
-        } else {
-            target.pause();
-            button.textContent = "▶ PLAY";
-        }
+        audio.closest(".song").classList.add("playing");
 
-        target.onended = () => {
-            button.textContent = "▶ PLAY";
-        };
+    });
+
+    audio.addEventListener("pause", () => {
+
+        audio.closest(".song").classList.remove("playing");
+
+    });
+
+    audio.addEventListener("ended", () => {
+
+        audio.closest(".song").classList.remove("playing");
 
     });
 
