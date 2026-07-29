@@ -5,9 +5,13 @@ box-sizing:border-box;
 font-family:"Space Grotesk",sans-serif;
 }
 
+html{
+scroll-behavior:smooth;
+}
+
 body{
 background:#050505;
-color:white;
+color:#fff;
 overflow-x:hidden;
 }
 
@@ -15,16 +19,28 @@ overflow-x:hidden;
 position:fixed;
 inset:0;
 z-index:-2;
+
 background:
-radial-gradient(circle at top,#1b4cff33,transparent 35%),
-radial-gradient(circle at bottom,#ff2d5530,transparent 35%),
-#050505;
+radial-gradient(circle at 50% -10%,rgba(55,120,255,.25),transparent 40%),
+radial-gradient(circle at 50% 120%,rgba(255,40,80,.15),transparent 40%),
+linear-gradient(#050505,#090909);
+
+animation:bgMove 10s ease-in-out infinite alternate;
+}
+
+@keyframes bgMove{
+from{
+transform:scale(1);
+}
+to{
+transform:scale(1.08);
+}
 }
 
 .container{
 width:min(92%,430px);
 margin:auto;
-padding:60px 0;
+padding:60px 0 40px;
 }
 
 .logo{
@@ -33,138 +49,35 @@ margin-bottom:45px;
 }
 
 .logo h1{
-font-size:44px;
+font-size:52px;
 font-weight:800;
-letter-spacing:8px;
+letter-spacing:10px;
+text-shadow:0 0 25px rgba(90,140,255,.15);
 }
 
 .logo p{
-margin-top:12px;
+margin-top:14px;
 font-size:13px;
-letter-spacing:4px;
+letter-spacing:6px;
 color:#5fa7ff;
 text-transform:uppercase;
 }
 
 .logo span{
 display:block;
-margin-top:10px;
-color:#8a8a8a;
-font-size:14px;
-}
-
-.song{
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,255,255,.08);
-
-backdrop-filter:blur(16px);
-
-border-radius:24px;
-
-padding:22px;
-
-margin-bottom:18px;
-
-transition:.35s;
-
-box-shadow:0 0 25px rgba(0,0,0,.25);
-
-}
-
-.song:hover{
-
-transform:translateY(-4px);
-
-border-color:#4f8dff;
-
-box-shadow:
-0 0 20px rgba(79,141,255,.25);
-
-}
-
-.song h2{
-
-font-size:19px;
-
-margin-bottom:15px;
-
-letter-spacing:1px;
-
-}
-
-audio{
-
-width:100%;
-
-filter:invert(.95);
-
-}
-
-.soon{
-
-margin-top:25px;
-
-width:100%;
-
-padding:20px;
-
-border:none;
-
-border-radius:22px;
-
-background:linear-gradient(90deg,#1c1c1c,#111);
-
-color:#7d7d7d;
-
-font-weight:700;
-
-letter-spacing:3px;
-
+margin-top:8px;
 font-size:15px;
-
-cursor:not-allowed;
-
-}
-
-footer{
-
-margin-top:35px;
-
-text-align:center;
-
-color:#4d4d4d;
-
-font-size:13px;
-
 letter-spacing:2px;
-
-}
-
-@media(max-width:480px){
-
-.logo h1{
-
-font-size:38px;
-
+color:#8f8f8f;
 }
 
 .song{
 
-padding:18px;
+position:relative;
+overflow:hidden;
 
-}
+padding:24px;
 
-}
-.song{
-    transition:.35s ease;
-}
+margin-bottom:22px;
 
-.song.playing{
-    transform:scale(1.02);
-    border:1px solid #4b7cff;
-    box-shadow:
-        0 0 18px rgba(75,124,255,.45),
-        0 0 60px rgba(75,124,255,.15);
-}
+border-radius:24px
