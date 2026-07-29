@@ -1,36 +1,42 @@
+const buttons = document.querySelectorAll(".play");
 const audios = document.querySelectorAll("audio");
 
-audios.forEach(audio => {
+buttons.forEach(button => {
 
-    audio.addEventListener("play", () => {
+    const audio = document.getElementById(button.dataset.target);
+    const card = button.closest(".song");
 
-        audios.forEach(other => {
+    button.addEventListener("click", () => {
 
-            if (other !== audio) {
-                other.pause();
-                other.currentTime = 0;
-            }
+        if (audio.paused) {
 
-        });
+            audios.forEach(a => {
+                if (a !== audio) {
+                    a.pause();
+                    a.currentTime = 0;
+                    a.closest(".song").classList.remove("playing");
+                }
+            });
 
-        document.querySelectorAll(".song").forEach(card=>{
+            buttons.forEach(b => b.textContent = "▶");
+
+            audio.play();
+            button.textContent = "❚❚";
+            card.classList.add("playing");
+
+        } else {
+
+            audio.pause();
+            button.textContent = "▶";
             card.classList.remove("playing");
-        });
 
-        audio.closest(".song").classList.add("playing");
-
-    });
-
-    audio.addEventListener("pause", () => {
-
-        audio.closest(".song").classList.remove("playing");
+        }
 
     });
 
     audio.addEventListener("ended", () => {
-
-        audio.closest(".song").classList.remove("playing");
-
+        button.textContent = "▶";
+        card.classList.remove("playing");
     });
 
 });
