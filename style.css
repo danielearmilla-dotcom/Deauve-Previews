@@ -1,4 +1,4 @@
-*{
+#*{
 margin:0;
 padding:0;
 box-sizing:border-box;
@@ -49,10 +49,16 @@ margin-bottom:45px;
 }
 
 .logo h1{
-font-size:52px;
+
+font-size:58px;
+
 font-weight:800;
+
 letter-spacing:10px;
-text-shadow:0 0 25px rgba(90,140,255,.15);
+
+text-shadow:
+0 0 20px rgba(255,255,255,.18);
+
 }
 
 .logo p{
