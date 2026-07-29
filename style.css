@@ -89,7 +89,17 @@ transition:.35s;
 
 box-shadow:
 0 15px 40px rgba(0,0,0,.35);
+.song:hover{
 
+transform:translateY(-5px);
+
+border-color:#4b7cff;
+
+box-shadow:
+0 0 25px rgba(75,124,255,.30),
+0 20px 50px rgba(0,0,0,.45);
+
+}
 }
 
 color:#fff;
