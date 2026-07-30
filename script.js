@@ -3,34 +3,45 @@ const audios = document.querySelectorAll("audio");
 const bars = document.querySelectorAll(".progress-bar");
 const songs = document.querySelectorAll(".song");
 const container = document.querySelector(".container");
+const logo = document.querySelector(".logo");
 
 let nowPlaying = document.querySelector(".now-playing");
 
 if (!nowPlaying) {
+
     nowPlaying = document.createElement("div");
+
     nowPlaying.className = "now-playing";
+
     nowPlaying.innerHTML = `
         <span>♪ NOW PLAYING</span>
         <h2>Nothing Playing</h2>
     `;
 
-    container.insertBefore(nowPlaying, container.firstChild);
+    container.insertBefore(nowPlaying, logo);
+
 }
 
 function resetInterface() {
 
     songs.forEach(song => {
+
         song.classList.remove("playing");
         song.style.opacity = "1";
         song.style.transform = "scale(1)";
+
     });
 
     buttons.forEach(btn => {
+
         btn.textContent = "▶";
+
     });
 
     bars.forEach(bar => {
+
         bar.style.width = "0%";
+
     });
 
     document.body.classList.remove(
@@ -40,7 +51,10 @@ function resetInterface() {
         "theme-green"
     );
 
+    nowPlaying.style.opacity = "0";
+    nowPlaying.style.transform = "translateY(-20px)";
     nowPlaying.querySelector("h2").textContent = "Nothing Playing";
+
 }
 
 buttons.forEach((button, index) => {
@@ -54,10 +68,14 @@ buttons.forEach((button, index) => {
         if (audio.paused) {
 
             audios.forEach(a => {
+
                 if (a !== audio) {
+
                     a.pause();
                     a.currentTime = 0;
+
                 }
+
             });
 
             resetInterface();
@@ -70,16 +88,22 @@ buttons.forEach((button, index) => {
             card.style.transform = "scale(1.02)";
 
             songs.forEach(song => {
+
                 if (song !== card) {
+
                     song.style.opacity = ".45";
+
                 }
+
             });
 
             const title = card.querySelector("h2").textContent;
 
             nowPlaying.querySelector("h2").textContent = title;
 
-            switch (index) {
+            nowPlaying.style.opacity = "1";
+            nowPlaying.style.transform = "translateY(0)";
+                        switch (index) {
 
                 case 0:
                     document.body.classList.add("theme-blue");
@@ -102,6 +126,7 @@ buttons.forEach((button, index) => {
         } else {
 
             audio.pause();
+
             resetInterface();
 
         }
@@ -111,6 +136,7 @@ buttons.forEach((button, index) => {
     audio.addEventListener("timeupdate", () => {
 
         const progress = (audio.currentTime / audio.duration) * 100 || 0;
+
         bar.style.width = progress + "%";
 
     });
