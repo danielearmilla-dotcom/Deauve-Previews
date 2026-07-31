@@ -1,149 +1,126 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEAUVE — Exclusive Previews</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<title>DEAUVE — Exclusive Previews</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="background"></div>
+  <div class="background" aria-hidden="true"></div>
 
-<div class="container">
+  <main class="container">
 
-<div class="logo">
+    <header class="logo">
+      <h1>DEAUVE</h1>
+      <p>UNRELEASED MUSIC <span>PREVIEWS.</span></p>
+    </header>
 
-<h1>DEAUVE</h1>
+    <section class="tracks" aria-label="Vista previa de canciones">
 
-<p>UNRELEASED MUSIC</p>
+      <!-- BOFETÁ -->
+      <article class="song">
+        <div class="song-top">
+          <div class="song-info">
+            <h2>BOFETÁ'</h2>
+            <span class="time-display"><span class="current">0:00</span> / <span class="duration">0:00</span></span>
+          </div>
+          <button type="button" class="play" data-target="bofeta" aria-label="Reproducir BOFETÁ'">
+            ▶
+          </button>
+        </div>
 
-<span>PREVIEWS.</span>
+        <div class="progress" role="slider" aria-label="Progreso de BOFETÁ'" tabindex="0">
+          <div class="progress-bar"></div>
+        </div>
 
-</div>
+        <audio id="bofeta" preload="metadata">
+          <source src="assets/BOFETA.m4a" type="audio/mp4">
+        </audio>
+      </article>
 
-<!-- BOFETA -->
+      <!-- DESDE HACE RATO -->
+      <article class="song">
+        <div class="song-top">
+          <div class="song-info">
+            <h2>DESDE HACE RATO</h2>
+            <span class="time-display"><span class="current">0:00</span> / <span class="duration">0:00</span></span>
+          </div>
+          <button type="button" class="play" data-target="desde" aria-label="Reproducir DESDE HACE RATO">
+            ▶
+          </button>
+        </div>
 
-<div class="song">
+        <div class="progress" role="slider" aria-label="Progreso de DESDE HACE RATO" tabindex="0">
+          <div class="progress-bar"></div>
+        </div>
 
-<div class="song-top">
+        <audio id="desde" preload="metadata">
+          <source src="assets/DESDEHACERATO.m4a" type="audio/mp4">
+        </audio>
+      </article>
 
-<h2>BOFETÁ'</h2>
+      <!-- TEMA 3 -->
+      <article class="song">
+        <div class="song-top">
+          <div class="song-info">
+            <h2>????????</h2>
+            <span class="time-display"><span class="current">0:00</span> / <span class="duration">0:00</span></span>
+          </div>
+          <button type="button" class="play" data-target="tema3" aria-label="Reproducir Tema no disponible">
+            ▶
+          </button>
+        </div>
 
-<button class="play" data-target="bofeta">
-▶
-</button>
+        <div class="progress" role="slider" aria-label="Progreso del tema 3" tabindex="0">
+          <div class="progress-bar"></div>
+        </div>
 
-</div>
+        <audio id="tema3" preload="metadata">
+          <source src="assets/TEMA3.m4a" type="audio/mp4">
+        </audio>
+      </article>
 
-<div class="progress">
-<div class="progress-bar"></div>
-</div>
+      <!-- PUTA BARETA -->
+      <article class="song">
+        <div class="song-top">
+          <div class="song-info">
+            <h2>PUTA BARETA</h2>
+            <span class="time-display"><span class="current">0:00</span> / <span class="duration">0:00</span></span>
+          </div>
+          <button type="button" class="play" data-target="bareta" aria-label="Reproducir PUTA BARETA">
+            ▶
+          </button>
+        </div>
 
-<audio id="bofeta">
-<source src="assets/BOFETA.m4a" type="audio/mp4">
-</audio>
+        <div class="progress" role="slider" aria-label="Progreso de PUTA BARETA" tabindex="0">
+          <div class="progress-bar"></div>
+        </div>
 
-</div>
+        <audio id="bareta" preload="metadata">
+          <source src="assets/PUTABARETA.m4a" type="audio/mp4">
+        </audio>
+      </article>
 
-<!-- DESDE -->
+    </section>
 
-<div class="song">
+    <div class="cta-container">
+      <button type="button" class="soon" disabled>COMING SOON</button>
+    </div>
 
-<div class="song-top">
+    <footer>
+      <p>© DEAUVE</p>
+    </footer>
 
-<h2>DESDE HACE RATO</h2>
+  </main>
 
-<button class="play" data-target="desde">
-▶
-</button>
-
-</div>
-
-<div class="progress">
-<div class="progress-bar"></div>
-</div>
-
-<audio id="desde">
-<source src="assets/DESDEHACERATO.m4a" type="audio/mp4">
-</audio>
-
-</div>
-
-<!-- TEMA 3 -->
-
-<div class="song">
-
-<div class="song-top">
-
-<h2>????????</h2>
-
-<button class="play" data-target="tema3">
-▶
-</button>
-
-</div>
-
-<div class="progress">
-<div class="progress-bar"></div>
-</div>
-
-<audio id="tema3">
-<source src="assets/TEMA3.m4a" type="audio/mp4">
-</audio>
-
-</div>
-
-<!-- PUTA BARETA -->
-
-<div class="song">
-
-<div class="song-top">
-
-<h2>PUTA BARETA</h2>
-
-<button class="play" data-target="bareta">
-▶
-</button>
-
-</div>
-
-<div class="progress">
-<div class="progress-bar"></div>
-</div>
-
-<audio id="bareta">
-<source src="assets/PUTABARETA.m4a" type="audio/mp4">
-</audio>
-
-</div>
-
-<button class="soon" disabled>
-
-COMING SOON
-
-</button>
-
-<footer>
-
-© DEAUVE
-
-</footer>
-
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
