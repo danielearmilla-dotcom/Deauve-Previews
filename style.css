@@ -27,9 +27,10 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  padding-bottom: 70px;
 }
 
-/* top bar */
+/* top nav */
 .top-nav {
   display: flex;
   justify-content: space-between;
@@ -60,7 +61,6 @@ body {
   color: var(--text-main);
 }
 
-/* layout */
 .container {
   width: min(92%, 460px);
   margin: 0 auto;
@@ -153,7 +153,7 @@ body {
   cursor: not-allowed;
 }
 
-/* seccion musica */
+/* music section */
 .music-section {
   padding-top: 20px;
 }
@@ -211,9 +211,47 @@ body {
   position: relative;
   padding: 16px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 16px;
+}
+
+.cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.badges-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.genre-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #a1a1aa;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.explicit-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #a1a1aa;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .track-number {
@@ -223,6 +261,7 @@ body {
 }
 
 .like-btn {
+  align-self: flex-start;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -238,7 +277,6 @@ body {
 
 .like-btn .heart-icon {
   font-size: 13px;
-  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .like-btn .like-count {
@@ -255,11 +293,9 @@ body {
   background: rgba(255, 42, 133, 0.15);
   border-color: var(--pink);
   color: var(--pink);
-  box-shadow: 0 0 15px rgba(255, 42, 133, 0.35);
 }
 
 .like-btn.liked .heart-icon {
-  transform: scale(1.25);
   color: var(--pink);
 }
 
@@ -296,7 +332,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .track-meta h3 {
@@ -315,15 +351,105 @@ body {
   color: var(--text-muted);
 }
 
-/* estilo del waveform de audio */
+/* barra de popularidad */
+.popularity-bar-container {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.popularity-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(255, 42, 133, 0.4), var(--pink));
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.popularity-text {
+  position: absolute;
+  right: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
+}
+
 .waveform {
   width: 100%;
   height: 36px;
   cursor: pointer;
-  margin-top: 4px;
 }
 
-/* footer */
+/* reproductor mini sticky */
+.sticky-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(12, 12, 14, 0.92);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sticky-player.visible {
+  transform: translateY(0);
+}
+
+.sticky-info {
+  display: flex;
+  flex-direction: column;
+  width: 110px;
+}
+
+.sticky-title {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sticky-artist {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sticky-waveform {
+  flex: 1;
+  max-width: 160px;
+  height: 28px;
+  margin: 0 12px;
+}
+
+.sticky-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--pink);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 footer {
   margin-top: 80px;
   text-align: center;
