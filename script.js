@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const cards = document.querySelectorAll(".song-card");
   const audios = document.querySelectorAll("audio");
+  const NAMESPACE = "deauve_previews_music"; // identificador unico de tu web
 
   let currentPlayingAudio = null;
 
@@ -37,6 +38,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressBar = card.querySelector(".progress-bar");
     const progressContainer = card.querySelector(".progress");
     const currentText = card.querySelector(".current");
+    const likeBtn = card.querySelector(".like-btn");
+    const countDisplay = card.querySelector(".like-count");
+    const trackId = card.getAttribute("data-id");
+
+    // obtener el numero global de likes al cargar la pagina
+    fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${trackId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.value !== undefined) {
+          countDisplay.textContent = data.value;
+        }
+      })
+      .catch(() => {
+        countDisplay.textContent = "0";
+      });
+
+    // comprobar si este telefono ya ha votado
+    if (localStorage.getItem(`voted_${trackId}`) === "true") {
+      likeBtn.classList.add("liked");
+      likeBtn.disabled = true;
+    }
+
+    // funcion al hacer click en like (suma +1 globalmente)
+    if (likeBtn) {
+      likeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (localStorage.getItem(`voted_${trackId}`) === "true") return;
+
+        // sumar 1 en la base de datos publica
+        fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${trackId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            countDisplay.textContent = data.value;
+            likeBtn.classList.add("liked");
+            likeBtn.disabled = true;
+            localStorage.setItem(`voted_${trackId}`, "true");
+          })
+          .catch((err) => console.error("Error al registrar el me gusta:", err));
+      });
+    }
 
     if (!audio) return;
 
