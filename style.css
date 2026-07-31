@@ -203,10 +203,11 @@ body {
   border-color: var(--pink);
 }
 
+/* caratula con imagen */
 .card-cover {
   height: 200px;
   width: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 42, 133, 0.15), transparent 70%), #121215;
+  background: #121215;
   border-radius: 14px;
   position: relative;
   padding: 16px;
@@ -214,6 +215,18 @@ body {
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.cover-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.65);
 }
 
 .cover-top {
@@ -221,6 +234,7 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  z-index: 2;
 }
 
 .badges-group {
@@ -233,9 +247,10 @@ body {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #a1a1aa;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
   padding: 2px 8px;
   border-radius: 4px;
 }
@@ -248,16 +263,21 @@ body {
   height: 18px;
   font-size: 10px;
   font-weight: 800;
-  color: #a1a1aa;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 3px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
 }
 
 .track-number {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .play-btn {
