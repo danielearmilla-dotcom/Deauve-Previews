@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- wavesurfer.js para la onda de audio -->
+  <script src="https://unpkg.com/wavesurfer.js@7"></script>
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -52,14 +55,14 @@
       <div class="tracks">
 
         <!-- 01 BOFETÁ -->
-        <article class="song-card" data-id="bofeta">
+        <article class="song-card" data-id="bofeta" data-audio="assets/BOFETA.m4a">
           <div class="card-cover">
             <span class="track-number">01</span>
             <button type="button" class="like-btn" aria-label="Me gusta Bofetá">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
-            <button type="button" class="play-btn" data-target="bofeta" aria-label="Reproducir Bofetá">
+            <button type="button" class="play-btn" aria-label="Reproducir Bofetá">
               ▶
             </button>
           </div>
@@ -70,23 +73,19 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
-          <div class="progress" role="slider" aria-label="Progreso Bofetá" tabindex="0">
-            <div class="progress-bar"></div>
-          </div>
-          <audio id="bofeta" preload="metadata">
-            <source src="assets/BOFETA.m4a" type="audio/mp4">
-          </audio>
+          <!-- contenedor de la onda de audio -->
+          <div class="waveform"></div>
         </article>
 
         <!-- 02 DESDE HACE RATO -->
-        <article class="song-card" data-id="desde">
+        <article class="song-card" data-id="desde" data-audio="assets/DESDEHACERATO.m4a">
           <div class="card-cover">
             <span class="track-number">02</span>
             <button type="button" class="like-btn" aria-label="Me gusta Desde hace rato">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
-            <button type="button" class="play-btn" data-target="desde" aria-label="Reproducir Desde hace rato">
+            <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato">
               ▶
             </button>
           </div>
@@ -97,23 +96,18 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
-          <div class="progress" role="slider" aria-label="Progreso Desde hace rato" tabindex="0">
-            <div class="progress-bar"></div>
-          </div>
-          <audio id="desde" preload="metadata">
-            <source src="assets/DESDEHACERATO.m4a" type="audio/mp4">
-          </audio>
+          <div class="waveform"></div>
         </article>
 
         <!-- 03 ???????? -->
-        <article class="song-card" data-id="tema3">
+        <article class="song-card" data-id="tema3" data-audio="assets/TEMA3.m4a">
           <div class="card-cover">
             <span class="track-number">03</span>
             <button type="button" class="like-btn" aria-label="Me gusta pista 3">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
-            <button type="button" class="play-btn" data-target="tema3" aria-label="Reproducir pista 3">
+            <button type="button" class="play-btn" aria-label="Reproducir pista 3">
               ▶
             </button>
           </div>
@@ -124,23 +118,18 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
-          <div class="progress" role="slider" aria-label="Progreso Tema 3" tabindex="0">
-            <div class="progress-bar"></div>
-          </div>
-          <audio id="tema3" preload="metadata">
-            <source src="assets/TEMA3.m4a" type="audio/mp4">
-          </audio>
+          <div class="waveform"></div>
         </article>
 
         <!-- 04 PUTA BARETA -->
-        <article class="song-card" data-id="bareta">
+        <article class="song-card" data-id="bareta" data-audio="assets/PUTABARETA.m4a">
           <div class="card-cover">
             <span class="track-number">04</span>
             <button type="button" class="like-btn" aria-label="Me gusta Puta Bareta">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
-            <button type="button" class="play-btn" data-target="bareta" aria-label="Reproducir Puta Bareta">
+            <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta">
               ▶
             </button>
           </div>
@@ -151,12 +140,7 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
-          <div class="progress" role="slider" aria-label="Progreso Puta Bareta" tabindex="0">
-            <div class="progress-bar"></div>
-          </div>
-          <audio id="bareta" preload="metadata">
-            <source src="assets/PUTABARETA.m4a" type="audio/mp4">
-          </audio>
+          <div class="waveform"></div>
         </article>
 
       </div>
@@ -170,8 +154,7 @@
 
   </main>
 
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 
 </body>
 </html>
