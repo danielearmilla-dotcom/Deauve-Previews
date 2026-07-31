@@ -1,17 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-// configuracion publica de conexion rápida
-const firebaseConfig = {
-  databaseURL: "https://deauve-likes-default-rtdb.europe-west1.firebasedatabase.app"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
 document.addEventListener("DOMContentLoaded", () => {
   const cards = document.querySelectorAll(".song-card");
   const audios = document.querySelectorAll("audio");
+
+  // tu id de proyecto unico para registrar los me gusta globales
+  const DB_ID = "deauve_music_likes_v1";
+  const API_URL = `https://api.counterapi.dev/v1/${DB_ID}`;
 
   let currentPlayingAudio = null;
 
@@ -52,36 +45,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const countDisplay = card.querySelector(".like-count");
     const trackId = card.getAttribute("data-id");
 
-    const trackRef = ref(db, 'likes/' + trackId);
+    // 1. cargar los likes globales que lleva esta cancion en vivo
+    fetch(`${API_URL}/${trackId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.count !== undefined) {
+          countDisplay.textContent = data.count;
+        }
+      })
+      .catch(() => {
+        countDisplay.textContent = "0";
+      });
 
-    // escuchar en tiempo real el contador de likes
-    onValue(trackRef, (snapshot) => {
-      const data = snapshot.val();
-      countDisplay.textContent = data || 0;
-    });
-
-    // comprobar si este dispositivo ya voto
+    // 2. si este movil ya votó antes, dejar el boton marcado y desactivado
     if (localStorage.getItem(`voted_${trackId}`) === "true") {
       likeBtn.classList.add("liked");
       likeBtn.disabled = true;
     }
 
-    // funcion al hacer click (suma +1 real y seguro)
+    // 3. al pulsar me gusta
     if (likeBtn) {
       likeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
 
         if (localStorage.getItem(`voted_${trackId}`) === "true") return;
 
-        runTransaction(trackRef, (currentLikes) => {
-          return (currentLikes || 0) + 1;
-        }).then(() => {
-          likeBtn.classList.add("liked");
-          likeBtn.disabled = true;
-          localStorage.setItem(`voted_${trackId}`, "true");
-        }).catch((err) => {
-          console.error("error guardando el me gusta:", err);
-        });
+        // deshabilitar boton de inmediato visualmente
+        likeBtn.classList.add("liked");
+        likeBtn.disabled = true;
+        localStorage.setItem(`voted_${trackId}`, "true");
+
+        // sumar +1 al servidor global para que lo vean todos los usuarios
+        fetch(`${API_URL}/${trackId}/up`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && data.count !== undefined) {
+              countDisplay.textContent = data.count;
+            }
+          })
+          .catch((err) => {
+            console.error("error al guardar me gusta global:", err);
+          });
       });
     }
 
