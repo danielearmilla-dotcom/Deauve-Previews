@@ -1,25 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const songs = document.querySelectorAll(".song");
+  const cards = document.querySelectorAll(".song-card");
   const audios = document.querySelectorAll("audio");
-  const container = document.querySelector(".container");
-  const logo = document.querySelector(".logo");
-  const themes = ["theme-blue", "theme-purple", "theme-green", "theme-red"];
 
   let currentPlayingAudio = null;
 
-  // crear elemento 'now playing' si no existe
-  let nowPlaying = document.querySelector(".now-playing");
-  if (!nowPlaying) {
-    nowPlaying = document.createElement("div");
-    nowPlaying.className = "now-playing";
-    nowPlaying.innerHTML = `
-      <span>♪ NOW PLAYING</span>
-      <h2>Nothing Playing</h2>
-    `;
-    container.insertBefore(nowPlaying, logo);
-  }
-
-  // formatear segundos a min:seg
   function formatTime(seconds) {
     if (isNaN(seconds) || seconds === Infinity) return "0:00";
     const mins = Math.floor(seconds / 60);
@@ -27,84 +11,53 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   }
 
-  function resetInterface() {
+  function resetAll() {
     audios.forEach((audio) => {
       audio.pause();
       audio.currentTime = 0;
     });
 
-    songs.forEach((song) => {
-      song.classList.remove("playing", "dimmed");
-      const bar = song.querySelector(".progress-bar");
-      const btn = song.querySelector(".play");
-      const currentText = song.querySelector(".current");
+    cards.forEach((card) => {
+      card.classList.remove("playing");
+      const btn = card.querySelector(".play-btn");
+      const bar = card.querySelector(".progress-bar");
+      const current = card.querySelector(".current");
 
-      if (bar) bar.style.width = "0%";
       if (btn) btn.textContent = "▶";
-      if (currentText) currentText.textContent = "0:00";
+      if (bar) bar.style.width = "0%";
+      if (current) current.textContent = "0:00";
     });
 
-    document.body.classList.remove(...themes);
-    nowPlaying.classList.remove("active");
     currentPlayingAudio = null;
   }
 
-  // configurar cada tarjeta
-  songs.forEach((card, index) => {
-    const btn = card.querySelector(".play");
+  cards.forEach((card) => {
+    const btn = card.querySelector(".play-btn");
     const audio = card.querySelector("audio");
-    const progressBarContainer = card.querySelector(".progress");
     const progressBar = card.querySelector(".progress-bar");
+    const progressContainer = card.querySelector(".progress");
     const currentText = card.querySelector(".current");
-    const durationText = card.querySelector(".duration");
-    const trackTitle = card.querySelector("h2")?.textContent || "pista";
 
     if (!audio) return;
 
-    // cargar duracion cuando la metadata este lista
-    const setDuration = () => {
-      if (durationText && audio.duration) {
-        durationText.textContent = formatTime(audio.duration);
-      }
-    };
-
-    if (audio.readyState >= 1) {
-      setDuration();
-    } else {
-      audio.addEventListener("loadedmetadata", setDuration);
-    }
-
-    // click en reproducir / pausar
     btn.addEventListener("click", () => {
       const isPaused = audio.paused;
 
       if (isPaused) {
-        resetInterface();
+        resetAll();
 
         audio.play().catch((err) => console.error("error al reproducir:", err));
         currentPlayingAudio = audio;
 
         btn.textContent = "❚❚";
         card.classList.add("playing");
-
-        songs.forEach((s) => {
-          if (s !== card) s.classList.add("dimmed");
-        });
-
-        if (themes[index]) document.body.classList.add(themes[index]);
-
-        const titleDisplay = nowPlaying.querySelector("h2");
-        if (titleDisplay) titleDisplay.textContent = trackTitle;
-        nowPlaying.classList.add("active");
       } else {
         audio.pause();
         btn.textContent = "▶";
         card.classList.remove("playing");
-        songs.forEach((s) => s.classList.remove("dimmed"));
       }
     });
 
-    // actualizar tiempo y barra durante reproduccion
     audio.addEventListener("timeupdate", () => {
       if (!audio.duration) return;
       const pct = (audio.currentTime / audio.duration) * 100;
@@ -112,40 +65,38 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentText) currentText.textContent = formatTime(audio.currentTime);
     });
 
-    // saltar en el audio al hacer click en la barra
-    if (progressBarContainer) {
-      progressBarContainer.addEventListener("click", (e) => {
-        const rect = progressBarContainer.getBoundingClientRect();
+    if (progressContainer) {
+      progressContainer.addEventListener("click", (e) => {
+        const rect = progressContainer.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
         const width = rect.width;
-        const percentage = clickX / width;
+        const pct = clickX / width;
 
         if (audio.duration) {
-          audio.currentTime = percentage * audio.duration;
+          audio.currentTime = pct * audio.duration;
         }
       });
     }
 
     audio.addEventListener("ended", () => {
-      resetInterface();
+      resetAll();
     });
   });
 
-  // pausar / reproducir con la barra espaciadora
   document.addEventListener("keydown", (e) => {
     if (e.code === "Space" && currentPlayingAudio) {
       e.preventDefault();
-      const parentCard = currentPlayingAudio.closest(".song");
-      const btn = parentCard?.querySelector(".play");
+      const card = currentPlayingAudio.closest(".song-card");
+      const btn = card?.querySelector(".play-btn");
 
       if (currentPlayingAudio.paused) {
         currentPlayingAudio.play();
         if (btn) btn.textContent = "❚❚";
-        parentCard?.classList.add("playing");
+        card?.classList.add("playing");
       } else {
         currentPlayingAudio.pause();
         if (btn) btn.textContent = "▶";
-        parentCard?.classList.remove("playing");
+        card?.classList.remove("playing");
       }
     }
   });
