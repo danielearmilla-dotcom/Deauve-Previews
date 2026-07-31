@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const cards = document.querySelectorAll(".song-card");
-  const DB_ID = "deauve_music_likes_v1";
-  const API_URL = `https://api.counterapi.dev/v1/${DB_ID}`;
 
   const stickyPlayer = document.getElementById("sticky-player");
   const stickyTitle = document.getElementById("sticky-title");
@@ -11,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const wavesurfers = [];
   let currentActiveObj = null;
 
-  // inicializar wavesurfer mini para el sticky
+  // wavesurfer mini para el sticky
   const stickySurfer = WaveSurfer.create({
     container: "#sticky-waveform",
     waveColor: "#3f3f46",
@@ -42,39 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
     stickyPlayer.classList.remove("visible");
   }
 
-  // funcion para recalcular porcentajes de popularidad
-  function updatePopularityPercentages(likeCountsMap) {
-    let totalLikes = 0;
-    Object.values(likeCountsMap).forEach((val) => {
-      totalLikes += val;
-    });
-
-    cards.forEach((card) => {
-      const trackId = card.getAttribute("data-id");
-      const cardLikes = likeCountsMap[trackId] || 0;
-      const fillBar = card.querySelector(".popularity-bar-fill");
-      const textBar = card.querySelector(".popularity-text");
-
-      let percent = 0;
-      if (totalLikes > 0) {
-        percent = Math.round((cardLikes / totalLikes) * 100);
-      }
-
-      fillBar.style.width = `${percent}%`;
-      textBar.textContent = `${percent}% popularidad`;
-    });
-  }
-
-  const likeCountsMap = {};
-
   cards.forEach((card) => {
     const btn = card.querySelector(".play-btn");
     const currentText = card.querySelector(".current");
-    const likeBtn = card.querySelector(".like-btn");
-    const countDisplay = card.querySelector(".like-count");
     const waveformContainer = card.querySelector(".waveform");
 
-    const trackId = card.getAttribute("data-id");
     const audioSrc = card.getAttribute("data-audio");
     const trackTitle = card.querySelector(".track-meta h3").textContent;
     const trackArtist = card.querySelector(".track-meta p").textContent;
@@ -91,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       url: audioSrc,
     });
 
-    const trackObj = { surfer, card, btn, currentText, trackTitle, trackArtist, audioSrc, trackId };
+    const trackObj = { surfer, card, btn, currentText, trackTitle, trackArtist, audioSrc };
     wavesurfers.push(trackObj);
 
     surfer.on("audioprocess", () => {
@@ -127,53 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
         stickyPlayer.classList.add("visible");
       }
     });
-
-    // consulta de me gustas globales
-    fetch(`${API_URL}/${trackId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const count = (data && data.count !== undefined) ? data.count : 0;
-        countDisplay.textContent = count;
-        likeCountsMap[trackId] = count;
-        updatePopularityPercentages(likeCountsMap);
-      })
-      .catch(() => {
-        countDisplay.textContent = "0";
-        likeCountsMap[trackId] = 0;
-        updatePopularityPercentages(likeCountsMap);
-      });
-
-    if (localStorage.getItem(`voted_${trackId}`) === "true") {
-      likeBtn.classList.add("liked");
-      likeBtn.disabled = true;
-    }
-
-    if (likeBtn) {
-      likeBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        if (localStorage.getItem(`voted_${trackId}`) === "true") return;
-
-        likeBtn.classList.add("liked");
-        likeBtn.disabled = true;
-        localStorage.setItem(`voted_${trackId}`, "true");
-
-        fetch(`${API_URL}/${trackId}/up`)
-          .then((res) => res.json())
-          .then((data) => {
-            const count = (data && data.count !== undefined) ? data.count : (likeCountsMap[trackId] || 0) + 1;
-            countDisplay.textContent = count;
-            likeCountsMap[trackId] = count;
-            updatePopularityPercentages(likeCountsMap);
-          })
-          .catch((err) => {
-            console.error("error me gusta global:", err);
-          });
-      });
-    }
   });
 
-  // control del boton sticky abajo
+  // control del boton sticky
   stickyPlayBtn.addEventListener("click", () => {
     if (currentActiveObj) {
       if (currentActiveObj.surfer.isPlaying()) {
