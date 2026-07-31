@@ -3,8 +3,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const DB_ID = "deauve_music_likes_v1";
   const API_URL = `https://api.counterapi.dev/v1/${DB_ID}`;
 
+  const stickyPlayer = document.getElementById("sticky-player");
+  const stickyTitle = document.getElementById("sticky-title");
+  const stickyArtist = document.getElementById("sticky-artist");
+  const stickyPlayBtn = document.getElementById("sticky-play-btn");
+
   const wavesurfers = [];
-  let currentActiveSurfer = null;
+  let currentActiveObj = null;
+
+  // inicializar wavesurfer mini para el sticky
+  const stickySurfer = WaveSurfer.create({
+    container: "#sticky-waveform",
+    waveColor: "#3f3f46",
+    progressColor: "#ff2a85",
+    cursorColor: "transparent",
+    barWidth: 2,
+    barRadius: 2,
+    barGap: 2,
+    height: 28,
+    interact: false
+  });
 
   function formatTime(seconds) {
     if (isNaN(seconds) || seconds === Infinity) return "0:00";
@@ -20,8 +38,34 @@ document.addEventListener("DOMContentLoaded", () => {
       if (btn) btn.textContent = "▶";
       if (currentText) currentText.textContent = "0:00";
     });
-    currentActiveSurfer = null;
+    currentActiveObj = null;
+    stickyPlayer.classList.remove("visible");
   }
+
+  // funcion para recalcular porcentajes de popularidad
+  function updatePopularityPercentages(likeCountsMap) {
+    let totalLikes = 0;
+    Object.values(likeCountsMap).forEach((val) => {
+      totalLikes += val;
+    });
+
+    cards.forEach((card) => {
+      const trackId = card.getAttribute("data-id");
+      const cardLikes = likeCountsMap[trackId] || 0;
+      const fillBar = card.querySelector(".popularity-bar-fill");
+      const textBar = card.querySelector(".popularity-text");
+
+      let percent = 0;
+      if (totalLikes > 0) {
+        percent = Math.round((cardLikes / totalLikes) * 100);
+      }
+
+      fillBar.style.width = `${percent}%`;
+      textBar.textContent = `${percent}% popularidad`;
+    });
+  }
+
+  const likeCountsMap = {};
 
   cards.forEach((card) => {
     const btn = card.querySelector(".play-btn");
@@ -32,8 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const trackId = card.getAttribute("data-id");
     const audioSrc = card.getAttribute("data-audio");
+    const trackTitle = card.querySelector(".track-meta h3").textContent;
+    const trackArtist = card.querySelector(".track-meta p").textContent;
 
-    // 1. inicializar wavesurfer para este tema
     const surfer = WaveSurfer.create({
       container: waveformContainer,
       waveColor: "#27272a",
@@ -46,44 +91,56 @@ document.addEventListener("DOMContentLoaded", () => {
       url: audioSrc,
     });
 
-    wavesurfers.push({ surfer, card, btn, currentText });
+    const trackObj = { surfer, card, btn, currentText, trackTitle, trackArtist, audioSrc, trackId };
+    wavesurfers.push(trackObj);
 
-    // actualizar tiempo mientras se reproduce
     surfer.on("audioprocess", () => {
       if (currentText) currentText.textContent = formatTime(surfer.getCurrentTime());
+      if (currentActiveObj === trackObj && surfer.getDuration()) {
+        stickySurfer.seekTo(surfer.getCurrentTime() / surfer.getDuration());
+      }
     });
 
-    // al terminar la cancion
     surfer.on("finish", () => {
       stopAllPlayers();
     });
 
-    // boton reproducir / pausar
     btn.addEventListener("click", () => {
       if (surfer.isPlaying()) {
         surfer.pause();
         btn.textContent = "▶";
+        stickyPlayBtn.textContent = "▶";
         card.classList.remove("playing");
-        currentActiveSurfer = null;
+        currentActiveObj = null;
+        stickyPlayer.classList.remove("visible");
       } else {
         stopAllPlayers();
         surfer.play();
         btn.textContent = "❚❚";
+        stickyPlayBtn.textContent = "❚❚";
         card.classList.add("playing");
-        currentActiveSurfer = surfer;
+        currentActiveObj = trackObj;
+
+        stickyTitle.textContent = trackTitle;
+        stickyArtist.textContent = trackArtist;
+        stickySurfer.load(audioSrc);
+        stickyPlayer.classList.add("visible");
       }
     });
 
-    // 2. sistema de me gusta global
+    // consulta de me gustas globales
     fetch(`${API_URL}/${trackId}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && data.count !== undefined) {
-          countDisplay.textContent = data.count;
-        }
+        const count = (data && data.count !== undefined) ? data.count : 0;
+        countDisplay.textContent = count;
+        likeCountsMap[trackId] = count;
+        updatePopularityPercentages(likeCountsMap);
       })
       .catch(() => {
         countDisplay.textContent = "0";
+        likeCountsMap[trackId] = 0;
+        updatePopularityPercentages(likeCountsMap);
       });
 
     if (localStorage.getItem(`voted_${trackId}`) === "true") {
@@ -104,9 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`${API_URL}/${trackId}/up`)
           .then((res) => res.json())
           .then((data) => {
-            if (data && data.count !== undefined) {
-              countDisplay.textContent = data.count;
-            }
+            const count = (data && data.count !== undefined) ? data.count : (likeCountsMap[trackId] || 0) + 1;
+            countDisplay.textContent = count;
+            likeCountsMap[trackId] = count;
+            updatePopularityPercentages(likeCountsMap);
           })
           .catch((err) => {
             console.error("error me gusta global:", err);
@@ -115,25 +173,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // control del boton sticky abajo
+  stickyPlayBtn.addEventListener("click", () => {
+    if (currentActiveObj) {
+      if (currentActiveObj.surfer.isPlaying()) {
+        currentActiveObj.surfer.pause();
+        currentActiveObj.btn.textContent = "▶";
+        stickyPlayBtn.textContent = "▶";
+        currentActiveObj.card.classList.remove("playing");
+      } else {
+        currentActiveObj.surfer.play();
+        currentActiveObj.btn.textContent = "❚❚";
+        stickyPlayBtn.textContent = "❚❚";
+        currentActiveObj.card.classList.add("playing");
+      }
+    }
+  });
+
   // atajo barra espaciadora
   document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && currentActiveSurfer) {
+    if (e.code === "Space" && currentActiveObj) {
       e.preventDefault();
-      const activeObj = wavesurfers.find((item) => item.surfer === currentActiveSurfer);
-
-      if (currentActiveSurfer.isPlaying()) {
-        currentActiveSurfer.pause();
-        if (activeObj) {
-          activeObj.btn.textContent = "▶";
-          activeObj.card.classList.remove("playing");
-        }
-      } else {
-        currentActiveSurfer.play();
-        if (activeObj) {
-          activeObj.btn.textContent = "❚❚";
-          activeObj.card.classList.add("playing");
-        }
-      }
+      stickyPlayBtn.click();
     }
   });
 });
