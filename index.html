@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- wavesurfer.js para la onda de audio -->
+  <!-- wavesurfer.js -->
   <script src="https://unpkg.com/wavesurfer.js@7"></script>
 
   <link rel="stylesheet" href="style.css">
@@ -57,15 +57,24 @@
         <!-- 01 BOFETÁ -->
         <article class="song-card" data-id="bofeta" data-audio="assets/BOFETA.m4a">
           <div class="card-cover">
-            <span class="track-number">01</span>
+            <div class="cover-top">
+              <span class="track-number">01</span>
+              <div class="badges-group">
+                <span class="genre-badge">REGGAETON</span>
+                <span class="explicit-badge" title="Contenido Explícito">E</span>
+              </div>
+            </div>
+            
             <button type="button" class="like-btn" aria-label="Me gusta Bofetá">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
+
             <button type="button" class="play-btn" aria-label="Reproducir Bofetá">
               ▶
             </button>
           </div>
+
           <div class="card-info">
             <div class="track-meta">
               <h3>Bofetá</h3>
@@ -73,22 +82,38 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
-          <!-- contenedor de la onda de audio -->
+
+          <!-- porcentaje de popularidad -->
+          <div class="popularity-bar-container">
+            <div class="popularity-bar-fill"></div>
+            <span class="popularity-text">0% popularidad</span>
+          </div>
+
+          <!-- waveform -->
           <div class="waveform"></div>
         </article>
 
         <!-- 02 DESDE HACE RATO -->
         <article class="song-card" data-id="desde" data-audio="assets/DESDEHACERATO.m4a">
           <div class="card-cover">
-            <span class="track-number">02</span>
+            <div class="cover-top">
+              <span class="track-number">02</span>
+              <div class="badges-group">
+                <span class="genre-badge">REGGAETON</span>
+                <span class="explicit-badge" title="Contenido Explícito">E</span>
+              </div>
+            </div>
+
             <button type="button" class="like-btn" aria-label="Me gusta Desde hace rato">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
+
             <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato">
               ▶
             </button>
           </div>
+
           <div class="card-info">
             <div class="track-meta">
               <h3>Desde hace rato</h3>
@@ -96,21 +121,36 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
+
+          <div class="popularity-bar-container">
+            <div class="popularity-bar-fill"></div>
+            <span class="popularity-text">0% popularidad</span>
+          </div>
+
           <div class="waveform"></div>
         </article>
 
         <!-- 03 ???????? -->
         <article class="song-card" data-id="tema3" data-audio="assets/TEMA3.m4a">
           <div class="card-cover">
-            <span class="track-number">03</span>
+            <div class="cover-top">
+              <span class="track-number">03</span>
+              <div class="badges-group">
+                <span class="genre-badge">REGGAETON</span>
+                <span class="explicit-badge" title="Contenido Explícito">E</span>
+              </div>
+            </div>
+
             <button type="button" class="like-btn" aria-label="Me gusta pista 3">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
+
             <button type="button" class="play-btn" aria-label="Reproducir pista 3">
               ▶
             </button>
           </div>
+
           <div class="card-info">
             <div class="track-meta">
               <h3>????????</h3>
@@ -118,21 +158,36 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
+
+          <div class="popularity-bar-container">
+            <div class="popularity-bar-fill"></div>
+            <span class="popularity-text">0% popularidad</span>
+          </div>
+
           <div class="waveform"></div>
         </article>
 
         <!-- 04 PUTA BARETA -->
         <article class="song-card" data-id="bareta" data-audio="assets/PUTABARETA.m4a">
           <div class="card-cover">
-            <span class="track-number">04</span>
+            <div class="cover-top">
+              <span class="track-number">04</span>
+              <div class="badges-group">
+                <span class="genre-badge">TRAP</span>
+                <span class="explicit-badge" title="Contenido Explícito">E</span>
+              </div>
+            </div>
+
             <button type="button" class="like-btn" aria-label="Me gusta Puta Bareta">
               <span class="heart-icon">♥</span>
               <span class="like-count">0</span>
             </button>
+
             <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta">
               ▶
             </button>
           </div>
+
           <div class="card-info">
             <div class="track-meta">
               <h3>PUTA BARETA</h3>
@@ -140,6 +195,12 @@
             </div>
             <span class="time-display"><span class="current">0:00</span></span>
           </div>
+
+          <div class="popularity-bar-container">
+            <div class="popularity-bar-fill"></div>
+            <span class="popularity-text">0% popularidad</span>
+          </div>
+
           <div class="waveform"></div>
         </article>
 
@@ -153,6 +214,16 @@
     </footer>
 
   </main>
+
+  <!-- reproductor flotante mini (sticky) -->
+  <div class="sticky-player" id="sticky-player">
+    <div class="sticky-info">
+      <span class="sticky-title" id="sticky-title">Pista</span>
+      <span class="sticky-artist" id="sticky-artist">Deauve</span>
+    </div>
+    <div class="sticky-waveform" id="sticky-waveform"></div>
+    <button type="button" class="sticky-play-btn" id="sticky-play-btn">▶</button>
+  </div>
 
   <script src="script.js"></script>
 
