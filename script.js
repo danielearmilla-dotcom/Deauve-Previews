@@ -1,7 +1,17 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// configuracion publica de conexion rápida
+const firebaseConfig = {
+  databaseURL: "https://deauve-likes-default-rtdb.europe-west1.firebasedatabase.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 document.addEventListener("DOMContentLoaded", () => {
   const cards = document.querySelectorAll(".song-card");
   const audios = document.querySelectorAll("audio");
-  const NAMESPACE = "deauve_previews_music"; // identificador unico de tu web
 
   let currentPlayingAudio = null;
 
@@ -42,41 +52,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const countDisplay = card.querySelector(".like-count");
     const trackId = card.getAttribute("data-id");
 
-    // obtener el numero global de likes al cargar la pagina
-    fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${trackId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.value !== undefined) {
-          countDisplay.textContent = data.value;
-        }
-      })
-      .catch(() => {
-        countDisplay.textContent = "0";
-      });
+    const trackRef = ref(db, 'likes/' + trackId);
 
-    // comprobar si este telefono ya ha votado
+    // escuchar en tiempo real el contador de likes
+    onValue(trackRef, (snapshot) => {
+      const data = snapshot.val();
+      countDisplay.textContent = data || 0;
+    });
+
+    // comprobar si este dispositivo ya voto
     if (localStorage.getItem(`voted_${trackId}`) === "true") {
       likeBtn.classList.add("liked");
       likeBtn.disabled = true;
     }
 
-    // funcion al hacer click en like (suma +1 globalmente)
+    // funcion al hacer click (suma +1 real y seguro)
     if (likeBtn) {
       likeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
 
         if (localStorage.getItem(`voted_${trackId}`) === "true") return;
 
-        // sumar 1 en la base de datos publica
-        fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${trackId}`)
-          .then((res) => res.json())
-          .then((data) => {
-            countDisplay.textContent = data.value;
-            likeBtn.classList.add("liked");
-            likeBtn.disabled = true;
-            localStorage.setItem(`voted_${trackId}`, "true");
-          })
-          .catch((err) => console.error("Error al registrar el me gusta:", err));
+        runTransaction(trackRef, (currentLikes) => {
+          return (currentLikes || 0) + 1;
+        }).then(() => {
+          likeBtn.classList.add("liked");
+          likeBtn.disabled = true;
+          localStorage.setItem(`voted_${trackId}`, "true");
+        }).catch((err) => {
+          console.error("error guardando el me gusta:", err);
+        });
       });
     }
 
