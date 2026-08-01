@@ -403,11 +403,25 @@ body {
   100% { height: 12px; }
 }
 
-.waveform {
+..waveform {
   width: 100%;
-  height: 36px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
   cursor: pointer;
-  margin-top: 4px;
+  margin-top: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.waveform-progress {
+  height: 100%;
+  width: 0%;
+  background: var(--pink);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
 }
 
 /* reproductor mini sticky */
