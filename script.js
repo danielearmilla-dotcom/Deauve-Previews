@@ -8,12 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeCard = null;
   let activeAudio = null;
 
-  const barHeights = [
-    25, 40, 60, 35, 75, 90, 50, 30, 85, 100, 65, 45, 30, 70, 80, 40, 
-    25, 55, 95, 60, 45, 75, 85, 35, 50, 90, 65, 40, 25, 50, 80, 100, 
-    75, 55, 35, 65, 45, 25
-  ];
-
   function formatTime(seconds) {
     if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
     const min = Math.floor(seconds / 60);
@@ -28,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = activeCard.querySelector('.play-btn');
       if (btn) btn.textContent = '▶';
     }
-    stickyPlayer.classList.remove('visible');
-    stickyPlayBtn.textContent = '▶';
+    if (stickyPlayer) stickyPlayer.classList.remove('visible');
+    if (stickyPlayBtn) stickyPlayBtn.textContent = '▶';
   }
 
   cards.forEach((card) => {
@@ -40,26 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackName = card.querySelector('.track-meta h3') ? card.querySelector('.track-meta h3').childNodes[0].textContent.trim() : 'Pista';
     const trackArtist = card.querySelector('.track-meta p') ? card.querySelector('.track-meta p').textContent.trim() : 'Deauve';
 
+    // Generar la barra interna de progreso
+    let progressBar = null;
     if (waveformContainer) {
       waveformContainer.innerHTML = '';
-      const barsWrapper = document.createElement('div');
-      barsWrapper.style.display = 'flex';
-      barsWrapper.style.alignItems = 'center';
-      barsWrapper.style.gap = '3px';
-      barsWrapper.style.height = '100%';
-      barsWrapper.style.width = '100%';
-
-      barHeights.forEach(h => {
-        const bar = document.createElement('div');
-        bar.style.flex = '1';
-        bar.style.height = `${h}%`;
-        bar.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-        bar.style.borderRadius = '99px';
-        bar.style.transition = 'background-color 0.15s ease';
-        bar.className = 'wf-bar';
-        barsWrapper.appendChild(bar);
-      });
-      waveformContainer.appendChild(barsWrapper);
+      progressBar = document.createElement('div');
+      progressBar.className = 'waveform-progress';
+      waveformContainer.appendChild(progressBar);
     }
 
     if (!audio) return;
@@ -74,24 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
         timeText.textContent = formatTime(remaining);
       }
 
-      if (audio.duration && waveformContainer) {
-        const progress = audio.currentTime / audio.duration;
-        const bars = waveformContainer.querySelectorAll('.wf-bar');
-        const playedCount = Math.floor(progress * bars.length);
-
-        bars.forEach((bar, index) => {
-          if (index <= playedCount) {
-            bar.style.backgroundColor = '#ff2a85';
-          } else {
-            bar.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-          }
-        });
+      if (audio.duration && progressBar) {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = `${pct}%`;
       }
     });
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
       if (timeText) timeText.textContent = formatTime(audio.duration);
+      if (progressBar) progressBar.style.width = '0%';
       activeCard = null;
       activeAudio = null;
     });
@@ -124,18 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
       audio.play().then(() => {
         card.classList.add('playing');
         playBtn.textContent = '❚❚';
-        stickyTitle.textContent = trackName;
-        stickyArtist.textContent = trackArtist;
-        stickyPlayBtn.textContent = '❚❚';
-        stickyPlayer.classList.add('visible');
+        if (stickyTitle) stickyTitle.textContent = trackName;
+        if (stickyArtist) stickyArtist.textContent = trackArtist;
+        if (stickyPlayBtn) stickyPlayBtn.textContent = '❚❚';
+        if (stickyPlayer) stickyPlayer.classList.add('visible');
       }).catch(err => console.error(err));
     });
   });
 
-  stickyPlayBtn.addEventListener('click', () => {
-    if (activeCard) {
-      const playBtn = activeCard.querySelector('.play-btn');
-      if (playBtn) playBtn.click();
-    }
-  });
+  if (stickyPlayBtn) {
+    stickyPlayBtn.addEventListener('click', () => {
+      if (activeCard) {
+        const playBtn = activeCard.querySelector('.play-btn');
+        if (playBtn) playBtn.click();
+      }
+    });
+  }
 });
