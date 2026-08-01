@@ -1,10 +1,12 @@
-=*,
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+*,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
 :root {
@@ -133,12 +135,11 @@ body {
   font-weight: 600;
   font-size: 14px;
   text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .btn-primary:hover {
   background: var(--pink-hover);
-  transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -189,6 +190,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 100%;
 }
 
 .song-card {
@@ -196,6 +198,9 @@ body {
   border-radius: 20px;
   border: 1px solid var(--border);
   padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   transition: border-color 0.3s ease;
 }
 
@@ -203,7 +208,7 @@ body {
   border-color: var(--pink);
 }
 
-/* caratula con imagen */
+/* caratula */
 .card-cover {
   height: 200px;
   width: 100%;
@@ -216,6 +221,15 @@ body {
   justify-content: space-between;
   margin-bottom: 16px;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+.cover-placeholder-1 {
+  background: radial-gradient(circle at top right, #2a081a, #0c0c0e) !important;
+}
+
+.cover-placeholder-2 {
+  background: radial-gradient(circle at top right, #1a082a, #0c0c0e) !important;
 }
 
 .cover-img {
@@ -296,13 +310,12 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 20px rgba(255, 42, 133, 0.4);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.15s ease, background 0.2s ease;
   z-index: 2;
 }
 
-.play-btn:hover {
-  transform: scale(1.06);
-  background: var(--pink-hover);
+.play-btn:active {
+  transform: scale(0.92);
 }
 
 .card-info {
@@ -312,7 +325,6 @@ body {
   margin-bottom: 8px;
 }
 
-/* badges de fecha de lanzamiento */
 .title-row {
   display: flex;
   align-items: center;
@@ -423,6 +435,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.sticky-play-btn:active {
+  transform: scale(0.92);
 }
 
 footer {
@@ -442,21 +459,4 @@ footer {
 footer p {
   font-size: 12px;
   color: var(--text-muted);
-}
-/* placeholders elegantes para temas sin portada */
-.cover-placeholder-1 {
-  background: radial-gradient(circle at top right, #2a081a, #0c0c0e) !important;
-}
-
-.cover-placeholder-2 {
-  background: radial-gradient(circle at top right, #1a082a, #0c0c0e) !important;
-}
-
-/* respuesta táctil nativa al pulsar play */
-.play-btn {
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-
-.play-btn:active {
-  transform: scale(0.92);
 }
