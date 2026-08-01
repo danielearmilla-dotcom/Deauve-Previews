@@ -3,147 +3,201 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEAUVE — Previews</title>
+  <title>DEAUVE — Unreleased Previews</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="top-header">
-    <h1 class="logo">DEAUVE</h1>
-    <span class="header-badge">PRÓXIMAMENTE</span>
+  <header class="top-nav">
+    <span class="nav-logo">DEAUVE</span>
+    <span class="nav-badge">PRÓXIMAMENTE</span>
   </header>
 
-  <main class="app-container">
+  <main class="container">
 
-    <div class="section-title-row">
-      <h2>música</h2>
-      <span class="track-count">4 tracks</span>
-    </div>
-
-    <div class="cards-list">
-
-      <!-- TRACK 01 -->
-      <div class="track-card" data-id="bofeta">
-        <div class="cover-wrapper">
-          <img src="assets/cover1.jpg" alt="Bofetá" class="cover-image">
-          <span class="track-index">01</span>
-          <div class="tag-group">
-            <span class="genre-tag">REGGAETON</span>
-            <span class="explicit-tag">E</span>
-          </div>
-          <button type="button" class="play-button" aria-label="Play">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-        </div>
-
-        <div class="card-body">
-          <div class="title-meta">
-            <h3>Bofetá <span class="status-tag">DISPONIBLE EN AGOSTO</span></h3>
-            <p class="artist-name">Deauve</p>
-          </div>
-          <span class="duration">0:56</span>
-        </div>
-
-        <div class="waveform-box">
-          <div class="waveform-bars"></div>
-        </div>
-
-        <audio src="assets/BOFETA.m4a"></audio>
+    <section class="hero">
+      <div class="pill-badge">
+        <span class="sparkle">✧</span> UNRELEASED · EXCLUSIVE PREVIEWS
       </div>
 
-      <!-- TRACK 02 -->
-      <div class="track-card" data-id="desde">
-        <div class="cover-wrapper">
-          <img src="assets/cover2.jpg" alt="Desde hace rato" class="cover-image">
-          <span class="track-index">02</span>
-          <div class="tag-group">
-            <span class="genre-tag">REGGAETON</span>
-            <span class="explicit-tag">E</span>
-          </div>
-          <button type="button" class="play-button" aria-label="Play">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-        </div>
+      <h1 class="hero-title">DEAUVE</h1>
 
-        <div class="card-body">
-          <div class="title-meta">
-            <h3>Desde hace rato <span class="status-tag">DISPONIBLE EN AGOSTO</span></h3>
-            <p class="artist-name">Deauve ft. Aka Free</p>
-          </div>
-          <span class="duration">1:10</span>
-        </div>
+      <p class="hero-desc">
+        escucha previews exclusivos de música aún no lanzada. próximamente en todas las plataformas.
+      </p>
 
-        <div class="waveform-box">
-          <div class="waveform-bars"></div>
-        </div>
+      <div class="hero-actions">
+        <a href="#music-section" class="btn-primary">escuchar ahora ↓</a>
+        <button type="button" class="btn-secondary" disabled>próximamente</button>
+      </div>
+    </section>
 
-        <audio src="assets/DESDEHACERATO.m4a"></audio>
+    <section id="music-section" class="music-section">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">EXCLUSIVE PREVIEWS</span>
+          <h2 class="section-title">música</h2>
+        </div>
+        <span class="tracks-count">4 tracks</span>
       </div>
 
-      <!-- TRACK 03 -->
-      <div class="track-card" data-id="tema3">
-        <div class="cover-wrapper cover-blank">
-          <span class="track-index">03</span>
-          <div class="tag-group">
-            <span class="genre-tag">REGGAETON</span>
-            <span class="explicit-tag">E</span>
+      <div class="tracks">
+
+        <!-- 01 BOFETÁ -->
+        <article class="song-card" data-id="bofeta">
+          <div class="card-cover">
+            <img src="assets/cover1.jpg" alt="Portada Bofetá" class="cover-img">
+
+            <div class="cover-top">
+              <span class="track-number">01</span>
+              <div class="badges-group">
+                <span class="genre-badge">REGGAETON</span>
+                <span class="explicit-badge">E</span>
+              </div>
+            </div>
+
+            <button type="button" class="play-btn" aria-label="Reproducir Bofetá">▶</button>
           </div>
-          <button type="button" class="play-button" aria-label="Play">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-        </div>
 
-        <div class="card-body">
-          <div class="title-meta">
-            <h3>?????? <span class="status-tag muted">PRÓXIMAMENTE</span></h3>
-            <p class="artist-name">Deauve</p>
+          <div class="card-info">
+            <div class="track-meta">
+              <div class="title-row">
+                <h3>Bofetá</h3>
+                <span class="release-badge">DISPONIBLE EN AGOSTO</span>
+              </div>
+              <p>Deauve</p>
+            </div>
+            <div class="time-display">
+              <div class="playing-bars">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="time-text">0:56</span>
+            </div>
           </div>
-          <span class="duration">0:00</span>
-        </div>
 
-        <div class="waveform-box">
-          <div class="waveform-bars"></div>
-        </div>
+          <div class="waveform"></div>
 
-        <audio src="assets/TEMA3.m4a"></audio>
+          <audio src="assets/BOFETA.m4a" preload="metadata"></audio>
+        </article>
+
+        <!-- 02 DESDE HACE RATO -->
+        <article class="song-card" data-id="desde">
+          <div class="card-cover">
+            <img src="assets/cover2.jpg" alt="Portada Desde hace rato" class="cover-img">
+
+            <div class="cover-top">
+              <span class="track-number">02</span>
+              <div class="badges-group">
+                <span class="genre-badge">REGGAETON</span>
+                <span class="explicit-badge">E</span>
+              </div>
+            </div>
+
+            <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato">▶</button>
+          </div>
+
+          <div class="card-info">
+            <div class="track-meta">
+              <div class="title-row">
+                <h3>Desde hace rato</h3>
+                <span class="release-badge">DISPONIBLE EN AGOSTO</span>
+              </div>
+              <p>Deauve ft. Aka Free</p>
+            </div>
+            <div class="time-display">
+              <div class="playing-bars">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="time-text">1:10</span>
+            </div>
+          </div>
+
+          <div class="waveform"></div>
+
+          <audio src="assets/DESDEHACERATO.m4a" preload="metadata"></audio>
+        </article>
+
+        <!-- 03 ?????? -->
+        <article class="song-card" data-id="tema3">
+          <div class="card-cover cover-placeholder-1">
+            <div class="cover-top">
+              <span class="track-number">03</span>
+              <div class="badges-group">
+                <span class="genre-badge">REGGAETON</span>
+                <span class="explicit-badge">E</span>
+              </div>
+            </div>
+
+            <button type="button" class="play-btn" aria-label="Reproducir pista 3">▶</button>
+          </div>
+
+          <div class="card-info">
+            <div class="track-meta">
+              <div class="title-row">
+                <h3>??????</h3>
+                <span class="release-badge muted">PRÓXIMAMENTE</span>
+              </div>
+              <p>Deauve</p>
+            </div>
+            <div class="time-display">
+              <div class="playing-bars">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="time-text">0:00</span>
+            </div>
+          </div>
+
+          <div class="waveform"></div>
+
+          <audio src="assets/TEMA3.m4a" preload="metadata"></audio>
+        </article>
+
+        <!-- 04 PUTA BARETA -->
+        <article class="song-card" data-id="bareta">
+          <div class="card-cover cover-placeholder-2">
+            <div class="cover-top">
+              <span class="track-number">04</span>
+              <div class="badges-group">
+                <span class="genre-badge">TRAP</span>
+                <span class="explicit-badge">E</span>
+              </div>
+            </div>
+
+            <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta">▶</button>
+          </div>
+
+          <div class="card-info">
+            <div class="track-meta">
+              <div class="title-row">
+                <h3>PUTA BARETA</h3>
+                <span class="release-badge muted">PRÓXIMAMENTE</span>
+              </div>
+              <p>Deauve ft. Aka Free</p>
+            </div>
+            <div class="time-display">
+              <div class="playing-bars">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="time-text">0:00</span>
+            </div>
+          </div>
+
+          <div class="waveform"></div>
+
+          <audio src="assets/PUTABARETA.m4a" preload="metadata"></audio>
+        </article>
+
       </div>
+    </section>
 
-      <!-- TRACK 04 -->
-      <div class="track-card" data-id="bareta">
-        <div class="cover-wrapper cover-blank">
-          <span class="track-index">04</span>
-          <div class="tag-group">
-            <span class="genre-tag">TRAP</span>
-            <span class="explicit-tag">E</span>
-          </div>
-          <button type="button" class="play-button" aria-label="Play">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-        </div>
-
-        <div class="card-body">
-          <div class="title-meta">
-            <h3>PUTA BARETA <span class="status-tag muted">PRÓXIMAMENTE</span></h3>
-            <p class="artist-name">Deauve ft. Aka Free</p>
-          </div>
-          <span class="duration">0:00</span>
-        </div>
-
-        <div class="waveform-box">
-          <div class="waveform-bars"></div>
-        </div>
-
-        <audio src="assets/PUTABARETA.m4a"></audio>
-      </div>
-
-    </div>
-
-    <footer class="app-footer">
-      <h3>DEAUVE</h3>
-      <div class="socials">
+    <footer>
+      <h4 class="footer-logo">DEAUVE</h4>
+      <div class="social-links">
         <a href="https://www.instagram.com/danieldeav?igsh=MWx5ZmM1enE4ZjViMg==" target="_blank">IG</a>
         <a href="https://www.tiktok.com/@danideav" target="_blank">TK</a>
       </div>
@@ -151,6 +205,15 @@
     </footer>
 
   </main>
+
+  <div class="sticky-player" id="sticky-player">
+    <div class="sticky-info">
+      <span class="sticky-title" id="sticky-title">Pista</span>
+      <span class="sticky-artist" id="sticky-artist">Deauve</span>
+    </div>
+    <div class="sticky-waveform" id="sticky-waveform"></div>
+    <button type="button" class="sticky-play-btn" id="sticky-play-btn">▶</button>
+  </div>
 
   <script src="script.js"></script>
 </body>
