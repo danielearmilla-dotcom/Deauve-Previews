@@ -403,7 +403,7 @@ body {
   100% { height: 12px; }
 }
 
-..waveform {
+.waveform {
   width: 100%;
   height: 6px;
   background: rgba(255, 255, 255, 0.1);
@@ -422,22 +422,22 @@ body {
   transition: width 0.1s linear;
 }
 
-}
-
 /* reproductor mini sticky */
 .sticky-player {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
   height: 64px;
-  background: rgba(12, 12, 14, 0.92);
+  background: rgba(12, 12, 14, 0.95);
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  box-sizing: border-box;
   z-index: 100;
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
