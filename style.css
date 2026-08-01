@@ -1,4 +1,4 @@
-*,
+=*,
 *::before,
 *::after {
   margin: 0;
@@ -442,4 +442,21 @@ footer {
 footer p {
   font-size: 12px;
   color: var(--text-muted);
+}
+/* placeholders elegantes para temas sin portada */
+.cover-placeholder-1 {
+  background: radial-gradient(circle at top right, #2a081a, #0c0c0e) !important;
+}
+
+.cover-placeholder-2 {
+  background: radial-gradient(circle at top right, #1a082a, #0c0c0e) !important;
+}
+
+/* respuesta táctil nativa al pulsar play */
+.play-btn {
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.play-btn:active {
+  transform: scale(0.92);
 }
