@@ -5,84 +5,94 @@ document.addEventListener('DOMContentLoaded', () => {
   const stickyArtist = document.getElementById('sticky-artist');
   const stickyPlayBtn = document.getElementById('sticky-play-btn');
 
-  const globalAudio = new Audio();
-  let currentCard = null;
+  let activeCard = null;
+  let activeAudio = null;
 
   function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
+    if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
     const min = Math.floor(seconds / 60);
     const sec = Math.floor(seconds % 60);
     return `${min}:${sec < 10 ? '0' : ''}${sec}`;
   }
 
+  function pauseCurrent() {
+    if (activeAudio) {
+      activeAudio.pause();
+    }
+    if (activeCard) {
+      activeCard.classList.remove('is-playing');
+      const btn = activeCard.querySelector('.play-btn');
+      if (btn) btn.textContent = '▶';
+    }
+    stickyPlayer.classList.remove('is-playing');
+    stickyPlayBtn.textContent = '▶';
+  }
+
   cards.forEach(card => {
     const playBtn = card.querySelector('.play-btn');
-    const trackName = card.querySelector('.track-name') ? card.querySelector('.track-name').textContent : 'Track';
+    const audio = card.querySelector('audio');
+    const timeDisplay = card.querySelector('.current');
+    const trackName = card.querySelector('.track-name') ? card.querySelector('.track-name').textContent : 'Pista';
     const trackArtist = card.querySelector('.track-artist') ? card.querySelector('.track-artist').textContent : 'Deauve';
-    const audioSrc = card.getAttribute('data-audio');
+
+    if (!audio) return;
+
+    audio.addEventListener('timeupdate', () => {
+      if (timeDisplay) {
+        timeDisplay.textContent = formatTime(audio.currentTime);
+      }
+    });
+
+    audio.addEventListener('ended', () => {
+      pauseCurrent();
+      activeCard = null;
+      activeAudio = null;
+    });
 
     playBtn.addEventListener('click', (e) => {
       e.stopPropagation();
 
-      if (currentCard === card && !globalAudio.paused) {
-        globalAudio.pause();
-        card.classList.remove('is-playing');
-        stickyPlayer.classList.remove('is-playing');
-        playBtn.textContent = '▶';
-        stickyPlayBtn.textContent = '▶';
+      // si es la misma canción que está sonando -> pausar
+      if (activeAudio === audio && !audio.paused) {
+        pauseCurrent();
         return;
       }
 
-      if (currentCard !== card) {
-        if (currentCard) {
-          currentCard.classList.remove('is-playing');
-          currentCard.querySelector('.play-btn').textContent = '▶';
-        }
-        
-        currentCard = card;
-        globalAudio.src = audioSrc;
+      // si había otra sonando -> pausarla primero
+      if (activeAudio && activeAudio !== audio) {
+        pauseCurrent();
       }
 
-      globalAudio.play().then(() => {
-        card.classList.add('is-playing');
-        playBtn.textContent = '❚❚';
+      // reproducir canción seleccionada
+      activeAudio = audio;
+      activeCard = card;
 
-        stickyTitle.textContent = trackName;
-        stickyArtist.textContent = trackArtist;
-        stickyPlayBtn.textContent = '❚❚';
-        stickyPlayer.classList.add('visible', 'is-playing');
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          card.classList.add('is-playing');
+          playBtn.textContent = '❚❚';
 
-        if (navigator.vibrate) {
-          navigator.vibrate(15);
-        }
-      }).catch(err => {
-        console.error("error al reproducir el archivo de audio:", err);
-      });
+          stickyTitle.textContent = trackName;
+          stickyArtist.textContent = trackArtist;
+          stickyPlayBtn.textContent = '❚❚';
+          stickyPlayer.classList.add('visible', 'is-playing');
+
+          if (navigator.vibrate) {
+            navigator.vibrate(15);
+          }
+        }).catch(err => {
+          console.error("error al reproducir el archivo de audio:", err);
+        });
+      }
     });
   });
 
-  globalAudio.addEventListener('timeupdate', () => {
-    if (currentCard) {
-      const timeDisplay = currentCard.querySelector('.current');
-      if (timeDisplay) {
-        timeDisplay.textContent = formatTime(globalAudio.currentTime);
-      }
-    }
-  });
-
-  globalAudio.addEventListener('ended', () => {
-    if (currentCard) {
-      currentCard.classList.remove('is-playing');
-      currentCard.querySelector('.play-btn').textContent = '▶';
-    }
-    stickyPlayer.classList.remove('is-playing');
-    stickyPlayBtn.textContent = '▶';
-  });
-
+  // botón del sticky player
   stickyPlayBtn.addEventListener('click', () => {
-    if (currentCard) {
-      const playBtn = currentCard.querySelector('.play-btn');
-      playBtn.click();
+    if (activeCard) {
+      const playBtn = activeCard.querySelector('.play-btn');
+      if (playBtn) playBtn.click();
     }
   });
 });
