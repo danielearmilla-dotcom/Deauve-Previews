@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let activeCard = null;
   let activeAudio = null;
-  let activeProgressBar = null;
 
   function formatTime(seconds) {
     if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
@@ -66,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       activeAudio = null;
     });
 
-    // adelantar/retroceder desde la tarjeta
+    // adelantar / retroceder desde la tarjeta
     if (progressBar) {
       progressBar.addEventListener('input', () => {
         if (audio.duration) {
@@ -90,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       activeAudio = audio;
       activeCard = card;
-      activeProgressBar = progressBar;
 
       const playPromise = audio.play();
       if (playPromise !== undefined) {
@@ -117,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // adelantar/retroceder desde el sticky player
+  // adelantar / retroceder desde el reproductor flotante
   stickyProgressBar.addEventListener('input', () => {
     if (activeAudio && activeAudio.duration) {
       const seekTime = (stickyProgressBar.value / 100) * activeAudio.duration;
