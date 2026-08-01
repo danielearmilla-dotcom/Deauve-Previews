@@ -1,126 +1,88 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const cards = document.querySelectorAll(".song-card");
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.song-card');
+  const stickyPlayer = document.getElementById('sticky-player');
+  const stickyTitle = document.getElementById('sticky-title');
+  const stickyArtist = document.getElementById('sticky-artist');
+  const stickyPlayBtn = document.getElementById('sticky-play-btn');
 
-  const stickyPlayer = document.getElementById("sticky-player");
-  const stickyTitle = document.getElementById("sticky-title");
-  const stickyArtist = document.getElementById("sticky-artist");
-  const stickyPlayBtn = document.getElementById("sticky-play-btn");
-
-  const wavesurfers = [];
-  let currentActiveObj = null;
-
-  // wavesurfer mini para el sticky
-  const stickySurfer = WaveSurfer.create({
-    container: "#sticky-waveform",
-    waveColor: "#3f3f46",
-    progressColor: "#ff2a85",
-    cursorColor: "transparent",
-    barWidth: 2,
-    barRadius: 2,
-    barGap: 2,
-    height: 28,
-    interact: false
-  });
+  const globalAudio = new Audio();
+  let currentCard = null;
 
   function formatTime(seconds) {
-    if (isNaN(seconds) || seconds === Infinity) return "0:00";
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    if (isNaN(seconds)) return '0:00';
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
   }
 
-  function stopAllPlayers() {
-    wavesurfers.forEach(({ surfer, card, btn, currentText }) => {
-      surfer.pause();
-      card.classList.remove("playing");
-      if (btn) btn.textContent = "▶";
-      if (currentText) currentText.textContent = "0:00";
-    });
-    currentActiveObj = null;
-    stickyPlayer.classList.remove("visible");
-  }
+  cards.forEach(card => {
+    const playBtn = card.querySelector('.play-btn');
+    const trackName = card.querySelector('.track-name') ? card.querySelector('.track-name').textContent : 'Track';
+    const trackArtist = card.querySelector('.track-artist') ? card.querySelector('.track-artist').textContent : 'Deauve';
+    const audioSrc = card.getAttribute('data-audio');
 
-  cards.forEach((card) => {
-    const btn = card.querySelector(".play-btn");
-    const currentText = card.querySelector(".current");
-    const waveformContainer = card.querySelector(".waveform");
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
 
-    const audioSrc = card.getAttribute("data-audio");
-    const trackTitle = card.querySelector(".track-meta h3").textContent;
-    const trackArtist = card.querySelector(".track-meta p").textContent;
-
-    const surfer = WaveSurfer.create({
-      container: waveformContainer,
-      waveColor: "#27272a",
-      progressColor: "#ff2a85",
-      cursorColor: "transparent",
-      barWidth: 2,
-      barRadius: 2,
-      barGap: 3,
-      height: 36,
-      url: audioSrc,
-    });
-
-    const trackObj = { surfer, card, btn, currentText, trackTitle, trackArtist, audioSrc };
-    wavesurfers.push(trackObj);
-
-    surfer.on("audioprocess", () => {
-      if (currentText) currentText.textContent = formatTime(surfer.getCurrentTime());
-      if (currentActiveObj === trackObj && surfer.getDuration()) {
-        stickySurfer.seekTo(surfer.getCurrentTime() / surfer.getDuration());
+      if (currentCard === card && !globalAudio.paused) {
+        globalAudio.pause();
+        card.classList.remove('is-playing');
+        stickyPlayer.classList.remove('is-playing');
+        playBtn.textContent = '▶';
+        stickyPlayBtn.textContent = '▶';
+        return;
       }
-    });
 
-    surfer.on("finish", () => {
-      stopAllPlayers();
-    });
+      if (currentCard !== card) {
+        if (currentCard) {
+          currentCard.classList.remove('is-playing');
+          currentCard.querySelector('.play-btn').textContent = '▶';
+        }
+        
+        currentCard = card;
+        globalAudio.src = audioSrc;
+      }
 
-    btn.addEventListener("click", () => {
-      if (surfer.isPlaying()) {
-        surfer.pause();
-        btn.textContent = "▶";
-        stickyPlayBtn.textContent = "▶";
-        card.classList.remove("playing");
-        currentActiveObj = null;
-        stickyPlayer.classList.remove("visible");
-      } else {
-        stopAllPlayers();
-        surfer.play();
-        btn.textContent = "❚❚";
-        stickyPlayBtn.textContent = "❚❚";
-        card.classList.add("playing");
-        currentActiveObj = trackObj;
+      globalAudio.play().then(() => {
+        card.classList.add('is-playing');
+        playBtn.textContent = '❚❚';
 
-        stickyTitle.textContent = trackTitle;
+        stickyTitle.textContent = trackName;
         stickyArtist.textContent = trackArtist;
-        stickySurfer.load(audioSrc);
-        stickyPlayer.classList.add("visible");
-      }
+        stickyPlayBtn.textContent = '❚❚';
+        stickyPlayer.classList.add('visible', 'is-playing');
+
+        if (navigator.vibrate) {
+          navigator.vibrate(15);
+        }
+      }).catch(err => {
+        console.error("error al reproducir el archivo de audio:", err);
+      });
     });
   });
 
-  // control del boton sticky
-  stickyPlayBtn.addEventListener("click", () => {
-    if (currentActiveObj) {
-      if (currentActiveObj.surfer.isPlaying()) {
-        currentActiveObj.surfer.pause();
-        currentActiveObj.btn.textContent = "▶";
-        stickyPlayBtn.textContent = "▶";
-        currentActiveObj.card.classList.remove("playing");
-      } else {
-        currentActiveObj.surfer.play();
-        currentActiveObj.btn.textContent = "❚❚";
-        stickyPlayBtn.textContent = "❚❚";
-        currentActiveObj.card.classList.add("playing");
+  globalAudio.addEventListener('timeupdate', () => {
+    if (currentCard) {
+      const timeDisplay = currentCard.querySelector('.current');
+      if (timeDisplay) {
+        timeDisplay.textContent = formatTime(globalAudio.currentTime);
       }
     }
   });
 
-  // atajo barra espaciadora
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && currentActiveObj) {
-      e.preventDefault();
-      stickyPlayBtn.click();
+  globalAudio.addEventListener('ended', () => {
+    if (currentCard) {
+      currentCard.classList.remove('is-playing');
+      currentCard.querySelector('.play-btn').textContent = '▶';
+    }
+    stickyPlayer.classList.remove('is-playing');
+    stickyPlayBtn.textContent = '▶';
+  });
+
+  stickyPlayBtn.addEventListener('click', () => {
+    if (currentCard) {
+      const playBtn = currentCard.querySelector('.play-btn');
+      playBtn.click();
     }
   });
 });
