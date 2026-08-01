@@ -4,10 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const stickyTitle = document.getElementById('sticky-title');
   const stickyArtist = document.getElementById('sticky-artist');
   const stickyPlayBtn = document.getElementById('sticky-play-btn');
-  const stickyProgressBar = document.getElementById('sticky-progress-bar');
 
   let activeCard = null;
   let activeAudio = null;
+
+  // patrones fijos para que la onda tenga forma realista
+  const barHeights = [20, 35, 60, 40, 75, 90, 45, 30, 85, 100, 70, 50, 30, 65, 80, 40, 25, 50, 95, 60, 40, 70, 85, 30, 50, 90, 65, 35, 20, 45, 75, 100, 80, 50, 30, 60, 40, 20];
 
   function formatTime(seconds) {
     if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
@@ -29,49 +31,74 @@ document.addEventListener('DOMContentLoaded', () => {
     stickyPlayBtn.textContent = '▶';
   }
 
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const playBtn = card.querySelector('.play-btn');
     const audio = card.querySelector('audio');
-    const timeDisplay = card.querySelector('.current');
-    const durationDisplay = card.querySelector('.duration');
-    const progressBar = card.querySelector('.progress-bar');
+    const timeDisplay = card.querySelector('.time-display');
+    const waveformContainer = card.querySelector('.waveform-container');
+    const waveformBars = card.querySelector('.waveform-bars');
     const trackName = card.querySelector('.track-name') ? card.querySelector('.track-name').textContent : 'Pista';
     const trackArtist = card.querySelector('.track-artist') ? card.querySelector('.track-artist').textContent : 'Deauve';
+
+    // generar barritas de la onda
+    if (waveformBars) {
+      waveformBars.innerHTML = '';
+      barHeights.forEach(h => {
+        const bar = document.createElement('div');
+        bar.className = 'wb-bar';
+        bar.style.height = `${h}%`;
+        waveformBars.appendChild(bar);
+      });
+    }
 
     if (!audio) return;
 
     audio.addEventListener('loadedmetadata', () => {
-      if (durationDisplay) {
-        durationDisplay.textContent = formatTime(audio.duration);
+      if (timeDisplay) {
+        timeDisplay.textContent = formatTime(audio.duration);
       }
     });
 
     audio.addEventListener('timeupdate', () => {
-      if (timeDisplay) {
-        timeDisplay.textContent = formatTime(audio.currentTime);
+      if (timeDisplay && audio.duration) {
+        const remaining = audio.duration - audio.currentTime;
+        timeDisplay.textContent = formatTime(remaining);
       }
-      if (audio.duration) {
-        const percent = (audio.currentTime / audio.duration) * 100;
-        if (progressBar) progressBar.value = percent;
-        if (activeAudio === audio) stickyProgressBar.value = percent;
+
+      // actualizar progreso visual en barras
+      if (audio.duration && waveformBars) {
+        const progress = audio.currentTime / audio.duration;
+        const bars = waveformBars.querySelectorAll('.wb-bar');
+        const playedCount = Math.floor(progress * bars.length);
+
+        bars.forEach((bar, index) => {
+          if (index <= playedCount) {
+            bar.classList.add('played');
+          } else {
+            bar.classList.remove('played');
+          }
+        });
       }
     });
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
-      if (progressBar) progressBar.value = 0;
-      stickyProgressBar.value = 0;
+      if (timeDisplay) timeDisplay.textContent = formatTime(audio.duration);
+      if (waveformBars) {
+        waveformBars.querySelectorAll('.wb-bar').forEach(b => b.classList.remove('played'));
+      }
       activeCard = null;
       activeAudio = null;
     });
 
-    // adelantar / retroceder desde la tarjeta
-    if (progressBar) {
-      progressBar.addEventListener('input', () => {
-        if (audio.duration) {
-          const seekTime = (progressBar.value / 100) * audio.duration;
-          audio.currentTime = seekTime;
-        }
+    // click en la onda para adelantar / retroceder
+    if (waveformContainer) {
+      waveformContainer.addEventListener('click', (e) => {
+        if (!audio.duration) return;
+        const rect = waveformContainer.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const pct = clickX / rect.width;
+        audio.currentTime = pct * audio.duration;
       });
     }
 
@@ -101,26 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
           stickyPlayBtn.textContent = '❚❚';
           stickyPlayer.classList.add('visible', 'is-playing');
 
-          if (durationDisplay && audio.duration) {
-            durationDisplay.textContent = formatTime(audio.duration);
-          }
-
           if (navigator.vibrate) {
             navigator.vibrate(15);
           }
         }).catch(err => {
-          console.error("error al reproducir el archivo de audio:", err);
+          console.error("error al reproducir:", err);
         });
       }
     });
-  });
-
-  // adelantar / retroceder desde el reproductor flotante
-  stickyProgressBar.addEventListener('input', () => {
-    if (activeAudio && activeAudio.duration) {
-      const seekTime = (stickyProgressBar.value / 100) * activeAudio.duration;
-      activeAudio.currentTime = seekTime;
-    }
   });
 
   stickyPlayBtn.addEventListener('click', () => {
