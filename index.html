@@ -75,21 +75,19 @@
               </div>
               <p class="track-artist">Deauve</p>
             </div>
-            <div class="time-display">
-              <span class="current">0:00</span> / <span class="duration">0:00</span>
-            </div>
           </div>
 
-          <!-- barra de progreso interactiva -->
-          <div class="progress-container">
+          <!-- reproductor integrado en tarjeta -->
+          <div class="player-controls">
             <input type="range" class="progress-bar" value="0" min="0" max="100" step="0.1">
-          </div>
-
-          <div class="equalizer">
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
+            <div class="time-row">
+              <span class="current">0:00</span>
+              <div class="equalizer">
+                <span class="bar"></span><span class="bar"></span>
+                <span class="bar"></span><span class="bar"></span>
+              </div>
+              <span class="duration">0:00</span>
+            </div>
           </div>
 
           <audio src="assets/BOFETA.m4a" preload="metadata"></audio>
@@ -119,21 +117,19 @@
               </div>
               <p class="track-artist">Deauve ft. Aka Free</p>
             </div>
-            <div class="time-display">
-              <span class="current">0:00</span> / <span class="duration">0:00</span>
-            </div>
           </div>
 
-          <!-- barra de progreso interactiva -->
-          <div class="progress-container">
+          <!-- reproductor integrado en tarjeta -->
+          <div class="player-controls">
             <input type="range" class="progress-bar" value="0" min="0" max="100" step="0.1">
-          </div>
-
-          <div class="equalizer">
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
+            <div class="time-row">
+              <span class="current">0:00</span>
+              <div class="equalizer">
+                <span class="bar"></span><span class="bar"></span>
+                <span class="bar"></span><span class="bar"></span>
+              </div>
+              <span class="duration">0:00</span>
+            </div>
           </div>
 
           <audio src="assets/DESDEHACERATO.m4a" preload="metadata"></audio>
@@ -161,21 +157,19 @@
               </div>
               <p class="track-artist">Deauve</p>
             </div>
-            <div class="time-display">
-              <span class="current">0:00</span> / <span class="duration">0:00</span>
-            </div>
           </div>
 
-          <!-- barra de progreso interactiva -->
-          <div class="progress-container">
+          <!-- reproductor integrado en tarjeta -->
+          <div class="player-controls">
             <input type="range" class="progress-bar" value="0" min="0" max="100" step="0.1">
-          </div>
-
-          <div class="equalizer">
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
+            <div class="time-row">
+              <span class="current">0:00</span>
+              <div class="equalizer">
+                <span class="bar"></span><span class="bar"></span>
+                <span class="bar"></span><span class="bar"></span>
+              </div>
+              <span class="duration">0:00</span>
+            </div>
           </div>
 
           <audio src="assets/TEMA3.m4a" preload="metadata"></audio>
@@ -203,21 +197,19 @@
               </div>
               <p class="track-artist">Deauve ft. Aka Free</p>
             </div>
-            <div class="time-display">
-              <span class="current">0:00</span> / <span class="duration">0:00</span>
-            </div>
           </div>
 
-          <!-- barra de progreso interactiva -->
-          <div class="progress-container">
+          <!-- reproductor integrado en tarjeta -->
+          <div class="player-controls">
             <input type="range" class="progress-bar" value="0" min="0" max="100" step="0.1">
-          </div>
-
-          <div class="equalizer">
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
-            <span class="bar"></span><span class="bar"></span>
+            <div class="time-row">
+              <span class="current">0:00</span>
+              <div class="equalizer">
+                <span class="bar"></span><span class="bar"></span>
+                <span class="bar"></span><span class="bar"></span>
+              </div>
+              <span class="duration">0:00</span>
+            </div>
           </div>
 
           <audio src="assets/PUTABARETA.m4a" preload="metadata"></audio>
@@ -240,22 +232,15 @@
 
   <!-- reproductor flotante mini (sticky) -->
   <div class="sticky-player" id="sticky-player">
-    <div class="sticky-top">
+    <input type="range" class="sticky-progress-bar" id="sticky-progress-bar" value="0" min="0" max="100" step="0.1">
+    
+    <div class="sticky-content">
       <div class="sticky-info">
         <span class="sticky-title" id="sticky-title">Pista</span>
         <span class="sticky-artist" id="sticky-artist">Deauve</span>
       </div>
       
-      <div class="sticky-controls">
-        <div class="sticky-equalizer">
-          <span></span><span></span><span></span><span></span>
-        </div>
-        <button type="button" class="sticky-play-btn" id="sticky-play-btn">▶</button>
-      </div>
-    </div>
-
-    <div class="sticky-progress-container">
-      <input type="range" class="progress-bar" id="sticky-progress-bar" value="0" min="0" max="100" step="0.1">
+      <button type="button" class="sticky-play-btn" id="sticky-play-btn">▶</button>
     </div>
   </div>
 
