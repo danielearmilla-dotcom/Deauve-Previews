@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateUI() {
-    if (!activeAudio || !activeAudio.duration) return;
+    if (!activeAudio || !activeAudio.duration || isNaN(activeAudio.duration)) return;
 
     const current = activeAudio.currentTime;
     const duration = activeAudio.duration;
