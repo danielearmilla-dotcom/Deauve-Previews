@@ -28,7 +28,7 @@
       <h1 class="hero-title">DEAUVE</h1>
 
       <p class="hero-desc">
-        Escucha previews exclusivos de música aún no lanzada. próximamente en todas las plataformas.
+        escucha previews exclusivos de música aún no lanzada. próximamente en todas las plataformas.
       </p>
 
       <div class="hero-actions">
@@ -61,7 +61,10 @@
               </div>
             </div>
 
-            <button type="button" class="play-btn" aria-label="Reproducir Bofetá" onclick="playTrack(0)">▶</button>
+            <button type="button" class="play-btn" aria-label="Reproducir Bofetá" onclick="playTrack(0)">
+              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
           </div>
 
           <div class="card-info">
@@ -82,7 +85,7 @@
 
           <div class="waveform"></div>
 
-          <audio src="assets/BOFETA.m4a" preload="metadata"></audio>
+          <audio src="assets/BOFETA.m4a" preload="auto"></audio>
         </article>
 
         <!-- 02 DESDE HACE RATO -->
@@ -98,7 +101,10 @@
               </div>
             </div>
 
-            <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato" onclick="playTrack(1)">▶</button>
+            <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato" onclick="playTrack(1)">
+              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
           </div>
 
           <div class="card-info">
@@ -119,7 +125,7 @@
 
           <div class="waveform"></div>
 
-          <audio src="assets/DESDEHACERATO.m4a" preload="metadata"></audio>
+          <audio src="assets/DESDEHACERATO.m4a" preload="auto"></audio>
         </article>
 
         <!-- 03 ?????? -->
@@ -133,7 +139,10 @@
               </div>
             </div>
 
-            <button type="button" class="play-btn" aria-label="Reproducir pista 3" onclick="playTrack(2)">▶</button>
+            <button type="button" class="play-btn" aria-label="Reproducir pista 3" onclick="playTrack(2)">
+              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
           </div>
 
           <div class="card-info">
@@ -154,7 +163,7 @@
 
           <div class="waveform"></div>
 
-          <audio src="assets/TEMA3.m4a" preload="metadata"></audio>
+          <audio src="assets/TEMA3.m4a" preload="auto"></audio>
         </article>
 
         <!-- 04 PUTA BARETA -->
@@ -168,7 +177,10 @@
               </div>
             </div>
 
-            <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta" onclick="playTrack(3)">▶</button>
+            <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta" onclick="playTrack(3)">
+              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
           </div>
 
           <div class="card-info">
@@ -189,7 +201,7 @@
 
           <div class="waveform"></div>
 
-          <audio src="assets/PUTABARETA.m4a" preload="metadata"></audio>
+          <audio src="assets/PUTABARETA.m4a" preload="auto"></audio>
         </article>
 
       </div>
@@ -209,23 +221,6 @@
     </footer>
 
   </main>
-
-  <div class="sticky-player" id="sticky-player">
-    <div class="sticky-info">
-      <span class="sticky-title" id="sticky-title">Pista</span>
-      <span class="sticky-artist" id="sticky-artist">Deauve</span>
-    </div>
-
-    <div class="sticky-controls">
-      <button type="button" class="control-btn" id="sticky-prev-btn" aria-label="Anterior">⏮</button>
-      <button type="button" class="sticky-play-btn" id="sticky-play-btn" aria-label="Reproducir/Pausar">▶</button>
-      <button type="button" class="control-btn" id="sticky-next-btn" aria-label="Siguiente">⏭</button>
-    </div>
-
-    <div class="sticky-progress-container" id="sticky-progress-container">
-      <div class="sticky-progress-bar" id="sticky-progress-bar"></div>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>
