@@ -180,11 +180,10 @@ body {
   box-shadow: 0 0 24px rgba(255, 42, 133, 0.18);
 }
 
-/* carátula corregida */
+/* carátula con tamaño compacto y controlado */
 .card-cover {
   width: 100%;
-  aspect-ratio: 9 / 12;
-  height: auto;
+  height: 240px;
   background: #121215;
   border-radius: 14px;
   position: relative;
