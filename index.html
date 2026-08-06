@@ -3,48 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEAUVE — Unreleased Previews</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+  <title>DEAUVE - Previews Exclusivos</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- barra superior -->
   <header class="top-nav">
-    <span class="nav-logo">DEAUVE</span>
-    <a href="https://open.spotify.com/artist/7DLMRThNpG55WECNPKJlh9?si=mIVsgkk9TomhEGPRtw2hxQ&utm_source=copy-link" target="_blank" class="nav-spotify-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.376 0 0 5.377 0 12c0 6.624 5.376 12 12 12 6.625 0 12-5.376 12-12C24 5.377 18.625 0 12 0zm5.501 17.303c-.216.354-.675.467-1.028.249-2.817-1.722-6.363-2.111-10.54-1.157-.403.092-.803-.162-.895-.565-.092-.403.163-.804.566-.896 4.571-1.045 8.492-.595 11.668 1.343.354.217.467.676.229 1.026zm1.467-3.262c-.272.443-.853.582-1.294.311-3.223-1.982-8.138-2.556-11.953-1.398-.498.151-1.024-.131-1.175-.628-.152-.497.132-1.024.628-1.175 4.362-1.325 9.776-.689 13.483 1.595.44.271.58.853.311 1.295zm.126-3.411c-3.864-2.294-10.232-2.506-13.918-1.388-.593.181-1.224-.162-1.405-.755-.181-.593.162-1.224.755-1.405 4.237-1.286 11.272-1.036 15.706 1.598.533.317.71.1.008.393-.533.317-1.008.71-1.531 1.95z"/>
+    <div class="nav-logo">DEAUVE</div>
+    <a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer" class="nav-spotify-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
       </svg>
-      <span>SÍGUEME EN SPOTIFY</span>
+      SÍGUEME EN SPOTIFY
     </a>
   </header>
 
   <main class="container">
-
+    <!-- hero -->
     <section class="hero">
       <div class="pill-badge">
-        <span class="sparkle">✧</span> Unreleased · Exclusive Previews
+        <span class="sparkle">✦</span> Unreleased · Exclusive Previews
       </div>
-
       <h1 class="hero-title">DEAUVE</h1>
-
       <p class="hero-desc">
         Escucha previews exclusivos de música aún no lanzada. PRÓXIMAMENTE en todas las plataformas.
       </p>
     </section>
 
-    <section id="music-section" class="music-section">
+    <!-- tracks -->
+    <section class="music-section">
       <div class="tracks">
 
-        <!-- 01 BOFETÁ -->
-        <article class="song-card" data-id="bofeta">
-          <div class="card-cover">
+        <!-- Canción 01 -->
+        <article class="song-card">
+          <audio src="assets/bofeta.mp3" preload="metadata"></audio>
+          
+          <div class="card-cover cover-placeholder-1">
             <img src="assets/cover1.jpg" alt="Portada Bofetá" class="cover-img">
-
+            
             <div class="cover-top">
               <span class="track-number">01</span>
               <div class="badges-group">
@@ -53,7 +50,7 @@
               </div>
             </div>
 
-            <button type="button" class="play-btn" aria-label="Reproducir Bofetá">
+            <button class="play-btn" aria-label="Reproducir Bofetá">
               <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
@@ -67,24 +64,23 @@
               </div>
               <p>Deauve</p>
             </div>
+            
             <div class="time-display">
               <div class="playing-bars">
                 <span></span><span></span><span></span>
               </div>
-              <span class="time-text">0:56</span>
+              <span class="duration-text">0:56</span>
             </div>
           </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/BOFETA.m4a" preload="auto"></audio>
         </article>
 
-        <!-- 02 DESDE HACE RATO -->
-        <article class="song-card" data-id="desde">
-          <div class="card-cover">
-            <img src="assets/cover2.jpg" alt="Portada Desde hace rato" class="cover-img">
-
+        <!-- Canción 02 -->
+        <article class="song-card">
+          <audio src="assets/track2.mp3" preload="metadata"></audio>
+          
+          <div class="card-cover cover-placeholder-2">
+            <img src="assets/cover2.jpg" alt="Portada Track 02" class="cover-img">
+            
             <div class="cover-top">
               <span class="track-number">02</span>
               <div class="badges-group">
@@ -93,7 +89,7 @@
               </div>
             </div>
 
-            <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato">
+            <button class="play-btn" aria-label="Reproducir Track 02">
               <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
@@ -102,127 +98,95 @@
           <div class="card-info">
             <div class="track-meta">
               <div class="title-row">
-                <h3>Desde Hace Rato</h3>
-                <span class="release-badge">DISPONIBLE EN AGOSTO</span>
-              </div>
-              <p>Deauve ft. Aka Free</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">1:10</span>
-            </div>
-          </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/DESDEHACERATO.m4a" preload="auto"></audio>
-        </article>
-
-        <!-- 03 ?????? -->
-        <article class="song-card" data-id="tema3">
-          <div class="card-cover cover-placeholder-1">
-            <div class="cover-top">
-              <span class="track-number">03</span>
-              <div class="badges-group">
-                <span class="genre-badge">Reggaeton</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
-
-            <button type="button" class="play-btn" aria-label="Reproducir pista 3">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
-
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>??????</h3>
+                <h3>Track 02</h3>
                 <span class="release-badge muted">PRÓXIMAMENTE</span>
               </div>
               <p>Deauve</p>
             </div>
+            
             <div class="time-display">
               <div class="playing-bars">
                 <span></span><span></span><span></span>
               </div>
-              <span class="time-text">0:00</span>
+              <span class="duration-text">0:45</span>
             </div>
           </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/TEMA3.m4a" preload="auto"></audio>
         </article>
 
-        <!-- 04 PUTA BARETA -->
-        <article class="song-card" data-id="bareta">
-          <div class="card-cover">
-            <img src="assets/IMG_9740.jpeg" alt="Portada PUTA BARETA" class="cover-img">
+      </div>
 
-            <div class="cover-top">
-              <span class="track-number">04</span>
-              <div class="badges-group">
-                <span class="genre-badge">Trap</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
-
-            <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
-
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>PUTA BARETA</h3>
-                <span class="release-badge muted">PRÓXIMAMENTE</span>
-              </div>
-              <p>Deauve ft. Aka Free</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">0:00</span>
-            </div>
-          </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/PUTABARETA.m4a" preload="auto"></audio>
-        </article>
-
+      <div class="disclaimer-note">
+        <p>Estos temas son demos/previews exclusivos. El audio final puede variar en el lanzamiento oficial.</p>
       </div>
     </section>
+  </main>
 
-    <div class="disclaimer-note">
-      <p>“Bofetá” y “Desde Hace Rato” pueden ser retrasadas hasta principios de septiembre por problemas con la distribuidora.</p>
+  <!-- reproductor fijo inferior estilo spotify -->
+  <div class="spotify-player" id="spotify-player">
+    <div class="spotify-player-top">
+      <div class="player-track-details">
+        <img src="assets/cover1.jpg" alt="Portada" id="sp-img" class="sp-cover">
+        <div class="sp-text">
+          <h4 id="sp-title">Bofetá</h4>
+          <p id="sp-artist">Deauve</p>
+        </div>
+      </div>
+      <div class="sp-check-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1.25 17.292l-4.5-4.5 1.414-1.414 3.086 3.086 7.086-7.086 1.414 1.414-8.5 8.5z"/></svg>
+      </div>
     </div>
 
-    <footer>
-      <h4 class="footer-logo">DEAUVE</h4>
-      <div class="social-links">
-        <a href="https://www.instagram.com/danieldeav?igsh=MWx5ZmM1enE4ZjViMg==" target="_blank" aria-label="Instagram">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-          </svg>
-        </a>
-        <a href="https://www.tiktok.com/@danideav" target="_blank" aria-label="TikTok">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.31 1.56-1.28 2.56.02.91.5 1.8 1.25 2.33.86.63 2.03.73 3.01.32.95-.38 1.65-1.28 1.81-2.28.06-1.21.03-2.43.03-3.64V.02z"/>
-          </svg>
-        </a>
+    <div class="sp-progress-row">
+      <span id="sp-current-time">0:06</span>
+      <div class="sp-progress-bar" id="sp-progress-bar">
+        <div class="sp-progress-fill" id="sp-progress-fill"></div>
+        <div class="sp-progress-knob" id="sp-progress-knob"></div>
       </div>
-      <p>© 2026 DEAUVE. Todos los derechos reservados.</p>
-    </footer>
+      <span id="sp-total-time">-2:53</span>
+    </div>
 
-  </main>
+    <div class="sp-controls-row">
+      <button class="sp-icon-btn" aria-label="Aleatorio">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.99 7.41 20 9.45V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+      </button>
+
+      <button class="sp-icon-btn" id="sp-prev-btn" aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h3v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+
+      <button class="sp-main-play" id="sp-play-btn" aria-label="Reproducir o pausar">
+        <div class="sp-play-inner">
+          <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </div>
+      </button>
+
+      <button class="sp-icon-btn" id="sp-next-btn" aria-label="Siguiente">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+
+      <button class="sp-icon-btn" aria-label="Repetir">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    <div class="footer-logo">DEAUVE</div>
+    <div class="social-links">
+      <a href="#" aria-label="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+      </a>
+      <a href="#" aria-label="TikTok">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+      </a>
+      <a href="#" aria-label="Spotify">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.62.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      </a>
+    </div>
+    <p>© 2026 DEAUVE. Todos los derechos reservados.</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
