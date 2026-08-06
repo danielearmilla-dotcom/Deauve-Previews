@@ -182,8 +182,8 @@ body {
 
 /* carátula */
 .card-cover {
-  height: 200px;
   width: 100%;
+  aspect-ratio: 1 / 1;
   background: #121215;
   border-radius: 14px;
   position: relative;
@@ -212,7 +212,7 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  filter: brightness(0.65);
+  filter: brightness(0.75);
 }
 
 .cover-top {
