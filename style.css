@@ -422,7 +422,7 @@ body {
 footer {
   margin-top: 20px;
   text-align: center;
-  padding-bottom: 20px;
+  padding-bottom: 220px;
 }
 
 .footer-logo {
@@ -467,4 +467,180 @@ footer {
 footer p {
   font-size: 12px;
   color: var(--text-muted);
+}
+
+/* reproductor inferior estilo spotify */
+.spotify-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px 20px;
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spotify-player.active {
+  transform: translateY(0);
+}
+
+.spotify-player-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.player-track-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sp-cover {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.sp-text h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.sp-text p {
+  font-size: 13px;
+  color: #a7a7a7;
+  margin-top: 2px;
+}
+
+.sp-check-icon {
+  width: 24px;
+  height: 24px;
+  color: #1ed760;
+}
+
+.sp-check-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sp-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: #a7a7a7;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.sp-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: #4d4d4d;
+  border-radius: 999px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sp-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #ffffff;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.sp-progress-knob {
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  left: 0%;
+  transform: translateX(-50%);
+  opacity: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+.sp-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.sp-icon-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  padding: 4px;
+}
+
+.sp-icon-btn:hover {
+  opacity: 1;
+}
+
+.sp-icon-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.sp-main-play {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #1ed760;
+  border: none;
+  padding: 3px;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px #1ed760, 0 0 15px rgba(30, 215, 96, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.sp-main-play:active {
+  transform: scale(0.94);
+}
+
+.sp-play-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #444 0%, #111 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.sp-play-inner svg {
+  width: 24px;
+  height: 24px;
+}
+
+.sp-main-play .icon-pause {
+  display: none;
+}
+
+.spotify-player.is-playing .sp-main-play .icon-play {
+  display: none;
+}
+
+.spotify-player.is-playing .sp-main-play .icon-pause {
+  display: block;
 }
