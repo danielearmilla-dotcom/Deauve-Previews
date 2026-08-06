@@ -77,7 +77,7 @@ body {
 .container {
   width: min(92%, 460px);
   margin: 0 auto;
-  padding: 40px 0 240px;
+  padding: 40px 0 60px;
 }
 
 /* hero */
@@ -130,6 +130,33 @@ body {
   padding-top: 20px;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.section-tag {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.tracks-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-bottom: 4px;
+}
+
 .tracks {
   display: flex;
   flex-direction: column;
@@ -169,6 +196,14 @@ body {
   box-sizing: border-box;
 }
 
+.cover-placeholder-1 {
+  background: radial-gradient(circle at top right, #2a081a, #0c0c0e) !important;
+}
+
+.cover-placeholder-2 {
+  background: radial-gradient(circle at top right, #1a082a, #0c0c0e) !important;
+}
+
 .cover-img {
   position: absolute;
   top: 0;
@@ -177,7 +212,7 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  filter: brightness(0.85);
+  filter: brightness(0.75);
 }
 
 .cover-top {
@@ -351,7 +386,7 @@ body {
 
 .waveform {
   width: 100%;
-  height: 4px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   cursor: pointer;
@@ -432,169 +467,4 @@ footer {
 footer p {
   font-size: 12px;
   color: var(--text-muted);
-}
-
-/* reproductor compacto inferior para móvil */
-.spotify-player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(10, 10, 10, 0.96);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  z-index: 100;
-  transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-sizing: border-box;
-}
-
-.spotify-player.active {
-  transform: translateY(0);
-}
-
-.spotify-player-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.player-track-details {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sp-cover {
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.sp-text h4 {
-  font-size: 13px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.sp-text p {
-  font-size: 11px;
-  color: #a7a7a7;
-}
-
-.sp-check-icon {
-  width: 18px;
-  height: 18px;
-  color: #1ed760;
-}
-
-.sp-check-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.sp-progress-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  color: #a7a7a7;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.sp-progress-bar {
-  flex: 1;
-  height: 4px;
-  background: #4d4d4d;
-  border-radius: 999px;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.sp-progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #ffffff;
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.sp-progress-knob {
-  width: 10px;
-  height: 10px;
-  background: #ffffff;
-  border-radius: 50%;
-  position: absolute;
-  left: 0%;
-  transform: translateX(-50%);
-  opacity: 1;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  pointer-events: none;
-}
-
-.sp-controls-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 280px;
-  margin: 0 auto;
-}
-
-.sp-icon-btn {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  opacity: 0.8;
-  padding: 4px;
-}
-
-.sp-icon-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-.sp-main-play {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #1ed760;
-  border: none;
-  padding: 2px;
-  cursor: pointer;
-  box-shadow: 0 0 0 2px #1ed760, 0 0 10px rgba(30, 215, 96, 0.4);
-}
-
-.sp-play-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #333 0%, #111 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-}
-
-.sp-play-inner svg {
-  width: 18px;
-  height: 18px;
-}
-
-.sp-main-play .icon-pause {
-  display: none;
-}
-
-.spotify-player.is-playing .sp-main-play .icon-play {
-  display: none;
-}
-
-.spotify-player.is-playing .sp-main-play .icon-pause {
-  display: block;
 }
