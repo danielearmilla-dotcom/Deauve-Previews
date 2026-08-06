@@ -14,6 +14,8 @@
   --card-bg: #0c0c0e;
   --pink: #ff2a85;
   --pink-hover: #ff4093;
+  --spotify-green: #1db954;
+  --spotify-green-hover: #1ed760;
   --text-main: #ffffff;
   --text-muted: #71717a;
   --border: rgba(255, 255, 255, 0.08);
@@ -52,14 +54,24 @@ body {
   color: var(--pink);
 }
 
-.nav-badge {
+.nav-spotify-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  padding: 6px 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-main);
+  background: var(--spotify-green);
+  color: #000000;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.nav-spotify-btn:hover {
+  background: var(--spotify-green-hover);
+  transform: scale(1.03);
 }
 
 .container {
@@ -392,7 +404,7 @@ body {
 }
 
 .disclaimer-note {
-  margin: 40px auto 20px;
+  margin: 40px auto 40px;
   text-align: center;
   max-width: 360px;
   padding: 12px 16px;
@@ -405,26 +417,6 @@ body {
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.5;
-}
-
-.bottom-action {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.btn-secondary {
-  width: 100%;
-  max-width: 260px;
-  padding: 14px 24px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: transparent;
-  color: var(--text-main);
-  font-weight: 600;
-  font-size: 14px;
-  cursor: not-allowed;
-  text-align: center;
 }
 
 footer {
