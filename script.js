@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (activeCard) {
-      const timeText = activeCard.querySelector('.duration-text, .time-text');
+      const timeText = activeCard.querySelector('.duration-text');
       if (timeText) {
         const remaining = duration - current;
         timeText.textContent = formatTime(remaining);
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cards.forEach((card, index) => {
     const playBtn = card.querySelector('.play-btn');
     const audio = card.querySelector('audio');
-    const timeText = card.querySelector('.duration-text, .time-text');
+    const timeText = card.querySelector('.duration-text');
     const waveformContainer = card.querySelector('.waveform');
 
     if (waveformContainer && !card.querySelector('.waveform-progress')) {
