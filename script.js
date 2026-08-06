@@ -53,10 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (activeCard) {
-      const timeText = activeCard.querySelector('.duration-text');
-      if (timeText) {
-        // Muestra: tiempo actual / tiempo total (ejemplo: 0:15 / 1:10)
-        timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+      const timeDisplay = activeCard.querySelector('.time-display');
+      if (timeDisplay) {
+        timeDisplay.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
       }
       const progressBar = activeCard.querySelector('.waveform-progress');
       if (progressBar) {
@@ -112,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cards.forEach((card, index) => { 
     const playBtn = card.querySelector('.play-btn'); 
     const audio = card.querySelector('audio'); 
-    const timeText = card.querySelector('.duration-text'); 
+    const timeDisplay = card.querySelector('.time-display'); 
     const waveformContainer = card.querySelector('.waveform');
 
     let progressBar = null;
@@ -123,22 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
       waveformContainer.appendChild(progressBar);
     }
 
-    if (timeText) {
-      // Si el audio no ha cargado duración, usa data-duration del HTML o pone 0:00
-      const fallbackDuration = timeText.getAttribute('data-duration') || '0:00';
-      
+    if (timeDisplay) {
+      const fallbackDuration = timeDisplay.getAttribute('data-duration') || timeDisplay.textContent.trim() || '0:00';
       if (audio && audio.duration) {
-        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+        timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
       } else {
-        timeText.textContent = `0:00 / ${fallbackDuration}`;
+        timeDisplay.textContent = `0:00 / ${fallbackDuration}`;
       }
     }
 
     if (!audio) return;
 
     audio.addEventListener('loadedmetadata', () => {
-      if (timeText) {
-        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeDisplay) {
+        timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
       }
     });
 
@@ -150,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
-      if (timeText) timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeDisplay) timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
       if (progressBar) progressBar.style.width = '0%';
 
       if (index + 1 < cards.length) {
