@@ -135,6 +135,8 @@ body {
   font-weight: 600;
   font-size: 14px;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   transition: background 0.2s ease, transform 0.15s ease;
 }
 
@@ -422,21 +424,38 @@ body {
   transition: width 0.1s linear;
 }
 
-/* reproductor mini sticky */
+/* aviso de retraso */
+.disclaimer-note {
+  margin: 40px auto 10px;
+  text-align: center;
+  max-width: 360px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.disclaimer-note p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* reproductor mini sticky tipo spotify */
 .sticky-player {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
-  height: 64px;
+  height: 68px;
   background: rgba(12, 12, 14, 0.95);
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
   box-sizing: border-box;
   z-index: 100;
   transform: translateY(100%);
@@ -450,11 +469,12 @@ body {
 .sticky-info {
   display: flex;
   flex-direction: column;
-  width: 110px;
+  width: 90px;
+  min-width: 80px;
 }
 
 .sticky-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -462,20 +482,43 @@ body {
 }
 
 .sticky-artist {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.sticky-waveform {
-  flex: 1;
-  max-width: 160px;
-  height: 28px;
-  margin: 0 12px;
+.sticky-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn:hover {
+  color: #fff;
+}
+
+.control-btn:active {
+  transform: scale(0.9);
 }
 
 .sticky-play-btn {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--pink);
   border: none;
@@ -492,8 +535,27 @@ body {
   transform: scale(0.9);
 }
 
+.sticky-progress-container {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  margin-left: 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.sticky-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--pink);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
 footer {
-  margin-top: 80px;
+  margin-top: 40px;
   text-align: center;
   padding-bottom: 20px;
 }
