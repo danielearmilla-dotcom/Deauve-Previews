@@ -169,14 +169,6 @@ body {
   box-sizing: border-box;
 }
 
-.cover-placeholder-1 {
-  background: radial-gradient(circle at top right, #2a081a, #0c0c0e) !important;
-}
-
-.cover-placeholder-2 {
-  background: radial-gradient(circle at top right, #1a082a, #0c0c0e) !important;
-}
-
 .cover-img {
   position: absolute;
   top: 0;
@@ -185,7 +177,7 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  filter: brightness(0.75);
+  filter: brightness(0.85);
 }
 
 .cover-top {
@@ -359,7 +351,7 @@ body {
 
 .waveform {
   width: 100%;
-  height: 6px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   cursor: pointer;
