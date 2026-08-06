@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const cards = Array.from(document.querySelectorAll('.song-card'));
 
-  let currentIndex = -1;
   let activeCard = null;
   let activeAudio = null;
 
@@ -21,17 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function playTrackAtIndex(index) {
+  function playTrack(index) {
     if (index < 0 || index >= cards.length) return;
 
     const card = cards[index];
     const audio = card.querySelector('audio');
 
+    if (!audio) return;
+
     if (activeAudio === audio) {
       if (!audio.paused) {
         pauseCurrent();
       } else {
-        audio.play();
+        audio.play().catch(err => console.log('error al reproducir:', err));
         card.classList.add('playing');
       }
       return;
@@ -39,17 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pauseCurrent();
 
-    currentIndex = index;
     activeCard = card;
     activeAudio = audio;
 
-    if (!audio) return;
-
-    audio.play();
-    card.classList.add('playing');
+    audio.play().then(() => {
+      card.classList.add('playing');
+    }).catch(err => {
+      console.log('error al reproducir audio:', err);
+    });
   }
-
-  window.playTrack = playTrackAtIndex;
 
   cards.forEach((card, index) => {
     const playBtn = card.querySelector('.play-btn');
@@ -83,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-
         if (progressBar) {
           progressBar.style.width = `${pct}%`;
         }
@@ -96,11 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (progressBar) progressBar.style.width = '0%';
 
       if (index + 1 < cards.length) {
-        playTrackAtIndex(index + 1);
+        playTrack(index + 1);
       } else {
         activeCard = null;
         activeAudio = null;
-        currentIndex = -1;
       }
     });
 
@@ -116,8 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (playBtn) {
       playBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        playTrackAtIndex(index);
+        playTrack(index);
       });
     }
   });
