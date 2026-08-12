@@ -53,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (activeCard) {
-      const timeDisplay = activeCard.querySelector('.time-display');
-      if (timeDisplay) {
-        timeDisplay.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+      const timeText = activeCard.querySelector('.time-text');
+      if (timeText) {
+        timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
       }
       const progressBar = activeCard.querySelector('.waveform-progress');
       if (progressBar) {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cards.forEach((card, index) => { 
     const playBtn = card.querySelector('.play-btn'); 
     const audio = card.querySelector('audio'); 
-    const timeDisplay = card.querySelector('.time-display'); 
+    const timeText = card.querySelector('.time-text'); 
     const waveformContainer = card.querySelector('.waveform');
 
     let progressBar = null;
@@ -122,20 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
       waveformContainer.appendChild(progressBar);
     }
 
-    if (timeDisplay) {
-      const fallbackDuration = timeDisplay.getAttribute('data-duration') || timeDisplay.textContent.trim() || '0:00';
+    if (timeText) {
+      const defaultTime = timeText.textContent.trim() || '0:00';
       if (audio && audio.duration) {
-        timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
+        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
       } else {
-        timeDisplay.textContent = `0:00 / ${fallbackDuration}`;
+        timeText.textContent = `0:00 / ${defaultTime}`;
       }
     }
 
     if (!audio) return;
 
     audio.addEventListener('loadedmetadata', () => {
-      if (timeDisplay) {
-        timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeText) {
+        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
       }
     });
 
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
-      if (timeDisplay) timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeText) timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
       if (progressBar) progressBar.style.width = '0%';
 
       if (index + 1 < cards.length) {
@@ -240,5 +240,23 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('touchend', () => {
       isDragging = false;
     });
+  }
+
+  // glitch intermitente exclusivo para el título principal
+  const heroTitle = document.querySelector('.hero-title.glitch');
+
+  if (heroTitle) {
+    function runGlitch() {
+      heroTitle.classList.add('glitch-active');
+
+      setTimeout(() => {
+        heroTitle.classList.remove('glitch-active');
+      }, 200);
+
+      const randomInterval = Math.floor(Math.random() * 2000) + 4000;
+      setTimeout(runGlitch, randomInterval);
+    }
+
+    setTimeout(runGlitch, 4000);
   }
 });
