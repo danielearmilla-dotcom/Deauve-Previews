@@ -1,4 +1,4 @@
-Document.addEventListener('DOMContentLoaded', () => { 
+document.addEventListener('DOMContentLoaded', () => { 
   const cards = Array.from(document.querySelectorAll('.song-card'));
   const spotifyPlayer = document.getElementById('spotify-player');
   const spImg = document.getElementById('sp-img');
@@ -264,7 +264,7 @@ Document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // cuenta atrás general (bofeta y bareta)
+  // cuenta atrás dinámica para Bofetá y Bareta
   function iniciarContador(elementId, targetDateString) {
     const badge = document.getElementById(elementId);
     if (!badge) return;
