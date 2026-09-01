@@ -1,290 +1,190 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEAUVE — Unreleased Previews</title>
+document.addEventListener('DOMContentLoaded', () => {
 
-  <!-- favicon para la pestaña -->
-  <link rel="icon" type="image/png" href="assets/A618E0BB-908D-4430-9C44-847916A8E41D.png">
+  // --- 1. MODO AMBIENTE REACTIVO (Canvas de orbes flotantes) ---
+  const canvas = document.createElement('canvas');
+  canvas.id = 'ambient-canvas';
+  document.body.prepend(canvas);
 
-  <!-- metadatos para redes sociales y whatsapp (open graph) -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://deauve-previews.vercel.app">
-  <meta property="og:title" content="DEAUVE — Unreleased Previews">
-  <meta property="og:description" content="Escucha previews exclusivos de música aún no lanzada. Próximamente en plataformas.">
-  <meta property="og:image" content="https://deauve-previews.vercel.app/assets/A618E0BB-908D-4430-9C44-847916A8E41D.png">
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
 
-  <!-- metadatos para twitter / x -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DEAUVE — Unreleased Previews">
-  <meta name="twitter:description" content="Escucha previews exclusivos de música aún no lanzada. Próximamente en plataformas.">
-  <meta name="twitter:image" content="https://deauve-previews.vercel.app/assets/A618E0BB-908D-4430-9C44-847916A8E41D.png">
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  const orbs = [
+    { x: width * 0.2, y: height * 0.2, radius: 180, color: 'rgba(255, 42, 133, 0.15)', vx: 0.4, vy: 0.2 },
+    { x: width * 0.8, y: height * 0.7, radius: 220, color: 'rgba(29, 185, 84, 0.08)', vx: -0.3, vy: -0.3 }
+  ];
 
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  function animateAmbient() {
+    ctx.clearRect(0, 0, width, height);
+    orbs.forEach(orb => {
+      orb.x += orb.vx;
+      orb.y += orb.vy;
+      if (orb.x < 0 || orb.x > width) orb.vx *= -1;
+      if (orb.y < 0 || orb.y > height) orb.vy *= -1;
 
-  <header class="top-nav">
-    <span class="nav-logo">DEAUVE</span>
-    <a href="https://open.spotify.com/artist/7DLMRThNpG55WECNPKJlh9?si=mIVsgkk9TomhEGPRtw2hxQ&utm_source=copy-link" target="_blank" class="nav-spotify-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.376 0 0 5.377 0 12c0 6.624 5.376 12 12 12 6.625 0 12-5.376 12-12C24 5.377 18.625 0 12 0zm5.501 17.303c-.216.354-.675.467-1.028.249-2.817-1.722-6.363-2.111-10.54-1.157-.403.092-.803-.162-.895-.565-.092-.403.163-.804.566-.896 4.571-1.045 8.492-.595 11.668 1.343.354.217.467.676.229 1.026zm1.467-3.262c-.272.443-.853.582-1.294.311-3.223-1.982-8.138-2.556-11.953-1.398-.498.151-1.024-.131-1.175-.628-.152-.497.132-1.024.628-1.175 4.362-1.325 9.776-.689 13.483 1.595.44.271.58.853.311 1.295zm.126-3.411c-3.864-2.294-10.232-2.506-13.918-1.388-.593.181-1.224-.162-1.405-.755-.181-.593.162-1.224.755-1.405 4.237-1.286 11.272-1.036 15.706 1.598.533.317.71.1.008.393-.533.317-1.008.71-1.531 1.95z"/>
-      </svg>
-      <span>SÍGUEME EN SPOTIFY</span>
-    </a>
-  </header>
+      const gradient = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
+      gradient.addColorStop(0, orb.color);
+      gradient.addColorStop(1, 'transparent');
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(animateAmbient);
+  }
+  animateAmbient();
 
-  <main class="container">
 
-    <section class="hero">
-      <div class="pill-badge">
-        <span class="sparkle">✧</span> Unreleased · Exclusive Previews
-      </div>
+  // --- 2. SELECTOR DE TEMA / PALETA DE COLORES POR CANCIÓN ---
+  // Puedes asignar un color personalizado opcional por tarjeta con data-accent, o usar el rosa por defecto.
+  const root = document.documentElement;
 
-      <h1 class="hero-title glitch" data-text="DEAUVE">DEAUVE</h1>
+  function applySongTheme(card) {
+    const accent = card.getAttribute('data-accent') || '#ff2a85';
+    root.style.setProperty('--pink', accent);
+    root.style.setProperty('--pink-glow', `${accent}66`);
+    
+    // Actualizamos dinámicamente el color del orbe ambiental principal
+    orbs[0].color = `${accent}26`; // ~15% opacidad en HEX
+  }
 
-      <p class="hero-desc">
-        Escucha previews exclusivos de música aún no lanzada. PRÓXIMAMENTE en todas las plataformas.
-      </p>
-    </section>
 
-    <section id="music-section" class="music-section">
-      <div class="tracks">
+  // --- 3. REPRODUCTOR Y VISUALIZADOR DE AUDIO REAL (Web Audio API) ---
+  const songCards = document.querySelectorAll('.song-card');
+  let audioCtx = null;
+  let analyser = null;
+  let audioSourceNode = null;
+  let dataArray = null;
+  let currentCardPlaying = null;
+  let animationFrameId = null;
 
-        <article class="song-card" data-id="bofeta">
-          <div class="card-cover">
-            <img src="assets/cover1.jpg" alt="Portada Bofetá" class="cover-img">
+  songCards.forEach(card => {
+    const audio = card.querySelector('audio');
+    const playBtn = card.querySelector('.play-btn');
+    const waveform = card.querySelector('.waveform');
+    const timeText = card.querySelector('.time-text');
+    
+    // Crear barra de progreso interna del waveform
+    let progressFill = card.querySelector('.waveform-progress');
+    if (!progressFill) {
+      progressFill = document.createElement('div');
+      progressFill.className = 'waveform-progress';
+      waveform.appendChild(progressFill);
+    }
 
-            <div class="cover-top">
-              <span class="track-number">01</span>
-              <div class="badges-group">
-                <span class="genre-badge">Reggaeton</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
+    // Formatear tiempo en MM:SS
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
 
-            <button type="button" class="play-btn" aria-label="Reproducir Bofetá">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
+    audio.addEventListener('loadedmetadata', () => {
+      if(timeText && audio.duration) {
+        timeText.textContent = formatTime(audio.duration);
+      }
+    });
 
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>Bofetá</h3>
-                <span class="release-badge" id="bofeta-countdown">DISPONIBLE EL 08/09 - 00:00</span>
-              </div>
-              <p>Deauve</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">0:56</span>
-            </div>
-          </div>
+    // Inicializar Web Audio API al primer gesto del usuario
+    function initWebAudioAPI(audioElement) {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+        analyser = audioCtx.createAnalyser();
+        audioSourceNode = audioCtx.createMediaElementSource(audioElement);
+        
+        audioSourceNode.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        
+        analyser.fftSize = 64;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
 
-          <div class="waveform"></div>
+    // Bucle del visualizador de frecuencia real
+    function renderRealVisualizer() {
+      if (!analyser || !currentCardPlaying) return;
+      analyser.getByteFrequencyData(dataArray);
 
-          <audio src="assets/BOFETA.m4a" preload="auto"></audio>
-        </article>
+      const bars = currentCardPlaying.querySelectorAll('.playing-bars span');
+      bars.forEach((bar, index) => {
+        const val = dataArray[index * 3] || 0;
+        const heightPct = Math.max(15, (val / 255) * 100);
+        bar.style.height = `${heightPct}%`;
+      });
 
-        <article class="song-card" data-id="bareta">
-          <div class="card-cover">
-            <img src="assets/IMG_9740.jpeg" alt="Portada Puta Bareta" class="cover-img">
+      animationFrameId = requestAnimationFrame(renderRealVisualizer);
+    }
 
-            <div class="cover-top">
-              <span class="track-number">02</span>
-              <div class="badges-group">
-                <span class="genre-badge">Trap</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
+    // Control del botón Play / Pause
+    playBtn.addEventListener('click', () => {
+      initWebAudioAPI(audio);
 
-            <button type="button" class="play-btn" aria-label="Reproducir Puta Bareta">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
+      // Si otra tarjeta está sonando, pausarla primero
+      songCards.forEach(otherCard => {
+        if (otherCard !== card) {
+          const otherAudio = otherCard.querySelector('audio');
+          otherAudio.pause();
+          otherAudio.currentTime = 0;
+          otherCard.classList.remove('playing', 'is-playing');
+        }
+      });
 
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>PUTA BARETA</h3>
-                <span class="release-badge" id="bareta-countdown">DISPONIBLE EL 06/09 - 01:00</span>
-              </div>
-              <p>Deauve ft. Aka Free</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">0:00</span>
-            </div>
-          </div>
+      if (audio.paused) {
+        audio.play();
+        card.classList.add('playing', 'is-playing');
+        currentCardPlaying = card;
+        applySongTheme(card);
+        cancelAnimationFrame(animationFrameId);
+        renderRealVisualizer();
+      } else {
+        audio.pause();
+        card.classList.remove('playing', 'is-playing');
+        currentCardPlaying = null;
+        cancelAnimationFrame(animationFrameId);
+      }
+    });
 
-          <div class="waveform"></div>
+    // Actualizar barra de progreso y tiempo actual
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progressFill.style.width = `${percent}%`;
+        timeText.textContent = formatTime(audio.currentTime);
+      }
+    });
 
-          <audio src="assets/PUTABARETA.m4a" preload="auto"></audio>
-        </article>
+    // Al terminar la pista
+    audio.addEventListener('ended', () => {
+      card.classList.remove('playing', 'is-playing');
+      progressFill.style.width = '0%';
+      timeText.textContent = formatTime(audio.duration);
+      currentCardPlaying = null;
+      cancelAnimationFrame(animationFrameId);
+    });
 
-        <article class="song-card" data-id="track5">
-          <div class="card-cover">
-            <img src="assets/c2e68243-aa04-4a44-a360-60d6667c9436.jpeg" alt="Portada Deauve ft. Haki" class="cover-img">
+    // Scrubbing interactivo en la barra de onda (Waveform click)
+    waveform.addEventListener('click', (e) => {
+      const rect = waveform.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const widthCard = rect.width;
+      const clickPercent = clickX / widthCard;
+      
+      if (audio.duration) {
+        audio.currentTime = clickPercent * audio.duration;
+      }
+    });
 
-            <div class="cover-top">
-              <span class="track-number">03</span>
-              <div class="badges-group">
-                <span class="genre-badge">?????</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
+  });
 
-            <button type="button" class="play-btn" aria-label="Reproducir ?????">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
-
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>?????</h3>
-                <span class="release-badge muted">EN DESARROLLO</span>
-              </div>
-              <p>Deauve ft. Haki</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">0:00</span>
-            </div>
-          </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/DeauveyHaki.m4a" preload="auto"></audio>
-        </article>
-
-        <article class="song-card" data-id="pecado">
-          <div class="card-cover">
-            <img src="assets/AD6A7E29-2A22-4826-97D8-0F5FEAFF46D8.png" alt="Portada Track 4" class="cover-img">
-
-            <div class="cover-top">
-              <span class="track-number">04</span>
-              <div class="badges-group">
-                <span class="genre-badge">Reggaeton</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
-
-            <button type="button" class="play-btn" aria-label="Reproducir Track 4">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
-
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>?????</h3>
-                <span class="release-badge muted">EN DESARROLLO</span>
-              </div>
-              <p>Deauve</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">0:00</span>
-            </div>
-          </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/TEMA3.m4a" preload="auto"></audio>
-        </article>
-
-        <article class="song-card" data-id="desde">
-          <div class="card-cover">
-            <img src="assets/cover2.jpg" alt="Portada Desde hace rato" class="cover-img">
-
-            <div class="cover-top">
-              <span class="track-number">05</span>
-              <div class="badges-group">
-                <span class="genre-badge">Reggaeton</span>
-                <span class="explicit-badge">E</span>
-              </div>
-            </div>
-
-            <button type="button" class="play-btn" aria-label="Reproducir Desde hace rato">
-              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-          </div>
-
-          <div class="card-info">
-            <div class="track-meta">
-              <div class="title-row">
-                <h3>Desde Hace Rato</h3>
-                <span class="release-badge muted">PRÓXIMAMENTE</span>
-              </div>
-              <p>Deauve ft. Aka Free</p>
-            </div>
-            <div class="time-display">
-              <div class="playing-bars">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="time-text">1:10</span>
-            </div>
-          </div>
-
-          <div class="waveform"></div>
-
-          <audio src="assets/DESDEHACERATO.m4a" preload="auto"></audio>
-        </article>
-
-      </div>
-    </section>
-
-    <footer>
-      <h4 class="footer-logo">DEAUVE</h4>
-      <div class="social-links">
-        <a href="https://www.instagram.com/danieldeav?igsh=MWx5ZmM1enE4ZjViMg==" target="_blank" aria-label="Instagram DEAUVE">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-          </svg>
-        </a>
-        <a href="https://www.tiktok.com/@danideav" target="_blank" aria-label="TikTok DEAUVE">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.31 1.56-1.28 2.56.02.91.5 1.8 1.25 2.33.86.63 2.03.73 3.01.32.95-.38 1.65-1.28 1.81-2.28.06-1.21.03-2.43.03-3.64V.02z"/>
-          </svg>
-        </a>
-      </div>
-
-      <div class="collabs-links" style="margin-top: 15px; font-size: 0.85rem; color: #888; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-        <a href="https://www.instagram.com/juanm.077?igsi=MXdveW16MnV6NzVoaA==" target="_blank" style="color: #aaa; text-decoration: none; transition: color 0.2s;">
-          IG AKA FREE
-        </a>
-        <span>•</span>
-        <a href="https://www.instagram.com/hectorarci?igsi=MXEwandkZDB6dzN5bw==" target="_blank" style="color: #aaa; text-decoration: none; transition: color 0.2s;">
-          IG HAKI
-        </a>
-      </div>
-
-      <p style="margin-top: 15px;">© 2026 DEAUVE. Todos los derechos reservados.</p>
-    </footer>
-
-  </main>
-
-  <script src="script.js"></script>
-</body>
-</html>
- 
+});
