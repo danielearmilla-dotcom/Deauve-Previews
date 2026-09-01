@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   animateAmbient();
 
-  // --- 2. SELECTOR DE PALETA DINÁMICA POR TARJETA ---
+  // --- 2. SELECTOR DE PALETA DINÁMICA & TILT HOLOGRÁFICO 3D ---
   const root = document.documentElement;
   function applySongTheme(card) {
     const accent = card.getAttribute('data-accent') || '#ff2a85';
@@ -69,7 +69,36 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAudio = null;
   let isDraggingSp = false;
 
-  // --- 3. WEB AUDIO API (Visualizador de frecuencias reales) ---
+  // Aplicar efecto de profundidad 3D en las tarjetas
+  cards.forEach(card => {
+    const cover = card.querySelector('.card-cover');
+    if (!cover) return;
+
+    card.addEventListener('pointermove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = -((y - centerY) / centerY) * 8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+      
+      cover.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+
+    card.addEventListener('pointerleave', () => {
+      cover.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      cover.style.transition = 'transform 0.5s ease';
+    });
+    
+    card.addEventListener('pointerenter', () => {
+      cover.style.transition = 'none';
+    });
+  });
+
+  // --- 3. WEB AUDIO API (Visualizador y Púlsares de Bajos en el Fondo) ---
   let audioCtx = null;
   let analyser = null;
   let audioSourceNodes = new Map();
@@ -98,6 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderRealVisualizer() {
     if (!analyser || !activeCard) return;
     analyser.getByteFrequencyData(dataArray);
+
+    // Púlsares de graves: el orbe late dinámicamente con el bajo
+    const bass = dataArray[2] || 0;
+    orbs[0].radius = 200 + (bass / 255) * 80;
 
     const bars = activeCard.querySelectorAll('.playing-bars span');
     bars.forEach((bar, index) => {
