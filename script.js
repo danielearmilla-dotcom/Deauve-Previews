@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAudio = null;
   let isDraggingSp = false;
 
-  // Web Audio API para ecualizador reactivo real
   let audioCtx = null;
   let analyser = null;
   let sourceNodeMap = new Map();
@@ -26,25 +25,29 @@ document.addEventListener('DOMContentLoaded', () => {
   let animId = null;
 
   function initAudioContext(audio) {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 32;
-      dataArray = new Uint8Array(analyser.frequencyBinCount);
-    }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    if (!sourceNodeMap.has(audio)) {
-      const source = audioCtx.createMediaElementSource(audio);
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
-      sourceNodeMap.set(audio, source);
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 32;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      if (!sourceNodeMap.has(audio)) {
+        const source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        sourceNodeMap.set(audio, source);
+      }
+    } catch (e) {
+      console.log('web audio api no soportado en segundo plano:', e);
     }
   }
 
   function renderVisualizer() {
-    if (analyser && activeCard && activeCard.classList.contains('playing')) {
+    if (analyser && activeCard && activeCard.classList.contains('playing') && activeAudio && !activeAudio.paused) {
       analyser.getByteFrequencyData(dataArray);
       const bars = activeCard.querySelectorAll('.playing-bars span');
       if (bars.length >= 3) {
@@ -93,9 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (spProgressKnob) spProgressKnob.style.left = `${pct}%`;
 
     if (spCurrentTime) spCurrentTime.textContent = formatTime(current);
-    if (spTotalTime) {
-      spTotalTime.textContent = formatTime(duration);
-    }
+    if (spTotalTime) spTotalTime.textContent = formatTime(duration);
 
     if (activeCard) {
       const timeText = activeCard.querySelector('.time-text');
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
           card.classList.add('playing');
           if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
           renderVisualizer();
-        }).catch(err => console.log('error al reproducir:', err));
+        }).catch(err => console.log('error reproduccion:', err));
       }
       return;
     }
@@ -152,10 +153,19 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.add('playing');
       if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
       renderVisualizer();
-    }).catch(err => {
-      console.log('error al reproducir audio:', err);
-    });
+    }).catch(err => console.log('error audio:', err));
   }
+
+  // control de pausa/resumen al cambiar de pestaña o salir del navegador
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (activeAudio && !activeAudio.paused) {
+        activeAudio.pause();
+        if (activeCard) activeCard.classList.remove('playing');
+        if (spotifyPlayer) spotifyPlayer.classList.remove('is-playing');
+      }
+    }
+  });
 
   cards.forEach((card, index) => { 
     const playBtn = card.querySelector('.play-btn'); 
@@ -189,8 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     audio.addEventListener('timeupdate', () => {
-      if (activeAudio === audio && !isDraggingSp) {
+      if (activeAudio === audio && !isDraggingSp && !document.hidden) {
         updateUI();
+      }
+    });
+
+    audio.addEventListener('pause', () => {
+      if (activeAudio === audio) {
+        card.classList.remove('playing');
+        if (spotifyPlayer) spotifyPlayer.classList.remove('is-playing');
+        if (animId) cancelAnimationFrame(animId);
       }
     });
 
@@ -310,17 +328,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // cuenta atrás exclusiva para Bareta
+  // cuenta atrás para Bareta
   const baretaBadge = document.getElementById('bareta-countdown');
   if (baretaBadge) {
-    const targetDate = new Date('2026-09-09T00:00:00').getTime();
+    const targetDate = new Date('2026-09-06T01:00:00').getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
       const diff = targetDate - now;
 
       if (diff <= 0) {
-        baretaBadge.textContent = '¡DISPONIBLE AHÓRA!';
+        baretaBadge.textContent = '¡DISPONIBLE AHORA!';
         return;
       }
 
