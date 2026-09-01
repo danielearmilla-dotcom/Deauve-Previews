@@ -41,20 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   animateAmbient();
 
-  // --- 2. CONTROL DE AUDIO INDEPENDIENTE POR TARJETA ---
-  const root = document.documentElement;
-  function applySongTheme(card) {
-    const accent = '#ff2a85';
-    root.style.setProperty('--pink', accent);
-    root.style.setProperty('--pink-glow', `${accent}66`);
-    orbs[0].color = `${accent}22`; 
-  }
-
+  // --- 2. CONTROL DE REPRODUCCIÓN POR TARJETA ---
   const cards = Array.from(document.querySelectorAll('.song-card'));
   let activeAudio = null;
   let activeCard = null;
 
-  // Efecto 3D en las tarjetas
+  // Efecto 3D suave en las portadas
   cards.forEach(card => {
     const cover = card.querySelector('.card-cover');
     if (!cover) return;
@@ -65,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const y = e.clientY - rect.top;
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const rotateX = -((y - centerY) / centerY) * 6;
-      const rotateY = ((x - centerX) / centerX) * 6;
+      const rotateX = -((y - centerY) / centerY) * 4;
+      const rotateY = ((x - centerX) / centerX) * 4;
       cover.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
     });
 
@@ -93,11 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (aud) aud.pause();
       c.classList.remove('playing');
       
-      // Sincronizar botones internos de control
-      const pauseIcon = c.querySelector('.play-pause-track-btn .icon-pause');
-      const playIcon = c.querySelector('.play-pause-track-btn .icon-play');
-      if (pauseIcon) pauseIcon.style.display = 'none';
+      const playIcon = c.querySelector('.play-btn .icon-play');
+      const pauseIcon = c.querySelector('.play-btn .icon-pause');
       if (playIcon) playIcon.style.display = 'block';
+      if (pauseIcon) pauseIcon.style.display = 'none';
     });
     activeAudio = null;
     activeCard = null;
@@ -105,23 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   cards.forEach((card, index) => {
     const playBtn = card.querySelector('.play-btn');
-    const miniPlayBtn = card.querySelector('.play-pause-track-btn');
-    const prevBtn = card.querySelector('.prev-track-btn');
-    const nextBtn = card.querySelector('.next-track-btn');
-    
     const audio = card.querySelector('audio');
     const timeText = card.querySelector('.time-text');
-    const waveformContainer = card.querySelector('.waveform');
 
     if (!audio) return;
-
-    let progressBar = null;
-    if (waveformContainer) {
-      waveformContainer.innerHTML = '';
-      progressBar = document.createElement('div');
-      progressBar.className = 'waveform-progress';
-      waveformContainer.appendChild(progressBar);
-    }
 
     audio.addEventListener('loadedmetadata', () => {
       if (timeText && !audio.currentTime) {
@@ -131,22 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audio.addEventListener('timeupdate', () => {
       if (activeAudio === audio && audio.duration) {
-        const current = audio.currentTime;
-        const duration = audio.duration;
-        const pct = (current / duration) * 100;
-
         if (timeText) {
-          timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
-        }
-        if (progressBar) {
-          progressBar.style.width = `${pct}`;
+          timeText.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
         }
       }
     });
 
     audio.addEventListener('ended', () => {
       card.classList.remove('playing');
-      if (progressBar) progressBar.style.width = '0%';
       if (timeText) timeText.textContent = formatTime(audio.duration);
       
       // Pasar a la siguiente pista automáticamente
@@ -164,11 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       activeCard = targetCard;
       activeAudio = targetAudio;
-      applySongTheme(targetCard);
       targetCard.classList.add('playing');
 
-      const pIcon = targetCard.querySelector('.play-pause-track-btn .icon-play');
-      const sIcon = targetCard.querySelector('.play-pause-track-btn .icon-pause');
+      const pIcon = targetCard.querySelector('.play-btn .icon-play');
+      const sIcon = targetCard.querySelector('.play-btn .icon-pause');
       if (pIcon) pIcon.style.display = 'none';
       if (sIcon) sIcon.style.display = 'block';
 
@@ -180,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!audio.paused) {
           audio.pause();
           card.classList.remove('playing');
-          const pIcon = card.querySelector('.play-pause-track-btn .icon-play');
-          const sIcon = card.querySelector('.play-pause-track-btn .icon-pause');
+          const pIcon = card.querySelector('.play-btn .icon-play');
+          const sIcon = card.querySelector('.play-btn .icon-pause');
           if (pIcon) pIcon.style.display = 'block';
           if (sIcon) sIcon.style.display = 'none';
           activeAudio = null;
@@ -194,54 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (playBtn) playBtn.addEventListener('click', (e) => { e.preventDefault(); togglePlay(); });
-    if (miniPlayBtn) miniPlayBtn.addEventListener('click', (e) => { e.preventDefault(); togglePlay(); });
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', (e) => {
+    if (playBtn) {
+      playBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        const prevIndex = (index - 1 + cards.length) % cards.length;
-        playTrack(cards[prevIndex]);
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const nextIndex = (index + 1) % cards.length;
-        playTrack(cards[nextIndex]);
-      });
-    }
-
-    // Funcionalidad de click/touch en la barra de onda para buscar posición
-    if (waveformContainer) {
-      let isDragging = false;
-      const seek = (e) => {
-        if (!audio.duration) return;
-        const rect = waveformContainer.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const offsetX = clientX - rect.left;
-        const pct = Math.max(0, Math.min(1, offsetX / rect.width));
-        audio.currentTime = pct * audio.duration;
-
-        if (activeAudio !== audio) {
-          playTrack(card);
-        }
-      };
-
-      waveformContainer.addEventListener('pointerdown', (e) => {
-        isDragging = true;
-        waveformContainer.setPointerCapture(e.pointerId);
-        seek(e);
-      });
-      waveformContainer.addEventListener('pointermove', (e) => {
-        if (isDragging) seek(e);
-      });
-      waveformContainer.addEventListener('pointerup', (e) => {
-        if (isDragging) {
-          isDragging = false;
-          waveformContainer.releasePointerCapture(e.pointerId);
-        }
+        togglePlay();
       });
     }
   });
