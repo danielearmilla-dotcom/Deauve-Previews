@@ -1,4 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => { 
+
+  // --- 1. MODO AMBIENTE REACTIVO (Canvas de orbes flotantes) ---
+  const canvas = document.createElement('canvas');
+  canvas.id = 'ambient-canvas';
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;opacity:0.7;';
+  document.body.prepend(canvas);
+
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const orbs = [
+    { x: width * 0.2, y: height * 0.2, radius: 200, color: 'rgba(255, 42, 133, 0.12)', vx: 0.3, vy: 0.2 },
+    { x: width * 0.8, y: height * 0.7, radius: 250, color: 'rgba(29, 185, 84, 0.06)', vx: -0.2, vy: -0.25 }
+  ];
+
+  function animateAmbient() {
+    ctx.clearRect(0, 0, width, height);
+    orbs.forEach(orb => {
+      orb.x += orb.vx;
+      orb.y += orb.vy;
+      if (orb.x < 0 || orb.x > width) orb.vx *= -1;
+      if (orb.y < 0 || orb.y > height) orb.vy *= -1;
+
+      const gradient = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
+      gradient.addColorStop(0, orb.color);
+      gradient.addColorStop(1, 'transparent');
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(animateAmbient);
+  }
+  animateAmbient();
+
+  // --- 2. SELECTOR DE PALETA DINÁMICA POR TARJETA ---
+  const root = document.documentElement;
+  function applySongTheme(card) {
+    const accent = card.getAttribute('data-accent') || '#ff2a85';
+    root.style.setProperty('--pink', accent);
+    root.style.setProperty('--pink-glow', `${accent}66`);
+    orbs[0].color = `${accent}22`; 
+  }
+
   const cards = Array.from(document.querySelectorAll('.song-card'));
   const spotifyPlayer = document.getElementById('spotify-player');
   const spImg = document.getElementById('sp-img');
@@ -18,6 +69,46 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAudio = null;
   let isDraggingSp = false;
 
+  // --- 3. WEB AUDIO API (Visualizador de frecuencias reales) ---
+  let audioCtx = null;
+  let analyser = null;
+  let audioSourceNodes = new Map();
+  let dataArray = null;
+  let animationFrameId = null;
+
+  function initWebAudioAPI(audioElement) {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+    if (!audioSourceNodes.has(audioElement)) {
+      const source = audioCtx.createMediaElementSource(audioElement);
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      audioSourceNodes.set(audioElement, source);
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function renderRealVisualizer() {
+    if (!analyser || !activeCard) return;
+    analyser.getByteFrequencyData(dataArray);
+
+    const bars = activeCard.querySelectorAll('.playing-bars span');
+    bars.forEach((bar, index) => {
+      const val = dataArray[index * 4] || 0;
+      const heightPx = Math.max(3, (val / 255) * 14);
+      bar.style.height = `${heightPx}px`;
+    });
+
+    animationFrameId = requestAnimationFrame(renderRealVisualizer);
+  }
+
   function formatTime(seconds) { 
     if (isNaN(seconds) || !isFinite(seconds) || seconds <= 0) return '0:00'; 
     const min = Math.floor(seconds / 60); 
@@ -35,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (spotifyPlayer) {
       spotifyPlayer.classList.remove('is-playing');
     }
+    cancelAnimationFrame(animationFrameId);
   }
 
   function updateUI() {
@@ -70,6 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!audio || !audio.src) return;
 
+    initWebAudioAPI(audio);
+
     if (activeAudio === audio) {
       if (!audio.paused) {
         pauseCurrent();
@@ -77,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.play().then(() => {
           card.classList.add('playing');
           if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
+          applySongTheme(card);
+          renderRealVisualizer();
         }).catch(err => console.log('error reproduccion:', err));
       }
       return;
@@ -98,9 +194,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (spotifyPlayer) spotifyPlayer.classList.add('active');
 
+    applySongTheme(card);
+
     audio.play().then(() => {
       card.classList.add('playing');
       if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
+      renderRealVisualizer();
     }).catch(err => console.log('error audio:', err));
   }
 
@@ -145,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (activeAudio === audio) {
         card.classList.remove('playing');
         if (spotifyPlayer) spotifyPlayer.classList.remove('is-playing');
+        cancelAnimationFrame(animationFrameId);
       }
     });
 
@@ -194,10 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
           isDraggingWaveform = false;
           waveformContainer.releasePointerCapture(e.pointerId);
         }
-      });
-
-      waveformContainer.addEventListener('pointercancel', (e) => {
-        isDraggingWaveform = false;
       });
     }
 
@@ -258,13 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
         spProgressBar.releasePointerCapture(e.pointerId);
       }
     });
-
-    spProgressBar.addEventListener('pointercancel', (e) => {
-      isDraggingSp = false;
-    });
   }
 
-  // cuenta atrás dinámica para Bofetá y Bareta
   function iniciarContador(elementId, targetDateString) {
     const badge = document.getElementById(elementId);
     if (!badge) return;
@@ -295,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
   iniciarContador('bofeta-countdown', '2026-09-08T00:00:00');
   iniciarContador('bareta-countdown', '2026-09-06T01:00:00');
 
-  // glitch hero title
   const heroTitle = document.querySelector('.hero-title.glitch');
   if (heroTitle) {
     function runGlitch() {
