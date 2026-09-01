@@ -556,14 +556,3 @@ footer p {
   font-size: 12px;
   color: var(--text-muted);
 }
-
-/* --- EFECTO TILT HOLOGRÁFICO 3D --- */
-.song-card {
-  perspective: 1000px;
-}
-
-.card-cover {
-  will-change: transform;
-  transform-style: preserve-3d;
-  transition: transform 0.1s ease-out;
-}
