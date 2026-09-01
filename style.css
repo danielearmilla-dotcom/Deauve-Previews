@@ -11,13 +11,14 @@
 
 :root {
   --bg: #050505;
-  --card-bg: #0c0c0e;
+  --card-bg: rgba(18, 18, 22, 0.65);
   --pink: #ff2a85;
   --pink-hover: #ff4093;
+  --pink-glow: rgba(255, 42, 133, 0.4);
   --spotify-green: #1db954;
   --spotify-green-hover: #1ed760;
   --text-main: #ffffff;
-  --text-muted: #71717a;
+  --text-muted: #8e8e93;
   --border: rgba(255, 255, 255, 0.08);
 }
 
@@ -27,6 +28,10 @@ html {
 
 body {
   background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(255, 42, 133, 0.12), transparent 40%),
+    radial-gradient(circle at 10% 40%, rgba(29, 185, 84, 0.05), transparent 30%);
+  background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
@@ -38,11 +43,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 18px 24px;
   position: sticky;
   top: 0;
-  background: rgba(5, 5, 5, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(5, 5, 5, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 50;
   border-bottom: 1px solid var(--border);
 }
@@ -52,6 +58,7 @@ body {
   font-size: 18px;
   letter-spacing: 2px;
   color: var(--pink);
+  text-shadow: 0 0 12px var(--pink-glow);
 }
 
 .nav-spotify-btn {
@@ -61,17 +68,19 @@ body {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
   background: var(--spotify-green);
   color: #000000;
   text-decoration: none;
-  transition: transform 0.2s ease, background 0.2s ease;
+  box-shadow: 0 4px 14px rgba(29, 185, 84, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-spotify-btn:hover {
   background: var(--spotify-green-hover);
-  transform: scale(1.03);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
 }
 
 .container {
@@ -97,6 +106,7 @@ body {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -116,6 +126,7 @@ body {
   background: linear-gradient(180deg, #ffffff 30%, #ffb3d6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 20px rgba(255, 42, 133, 0.2));
 }
 
 /* efecto glitch para el título hero */
@@ -191,33 +202,6 @@ body {
   padding-top: 20px;
 }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 24px;
-}
-
-.section-tag {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--text-muted);
-  font-weight: 600;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.section-title {
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.tracks-count {
-  font-size: 12px;
-  color: var(--text-muted);
-  padding-bottom: 4px;
-}
-
 .tracks {
   display: flex;
   flex-direction: column;
@@ -227,18 +211,32 @@ body {
 
 .song-card {
   background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
   border: 1px solid var(--border);
   padding: 16px;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  animation: cardFadeIn 0.6s ease forwards;
+}
+
+.song-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .song-card.playing {
   border-color: var(--pink);
-  box-shadow: 0 0 24px rgba(255, 42, 133, 0.18);
+  box-shadow: 0 0 30px rgba(255, 42, 133, 0.25), inset 0 0 15px rgba(255, 42, 133, 0.05);
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* carátula cuadrada proporcional 1:1 */
@@ -257,12 +255,14 @@ body {
   box-sizing: border-box;
 }
 
-.cover-placeholder-1 {
-  background: radial-gradient(circle at top right, #2a081a, #0c0c0e) !important;
-}
-
-.cover-placeholder-2 {
-  background: radial-gradient(circle at top right, #1a082a, #0c0c0e) !important;
+/* Reflejo estilo cristal en las portadas */
+.card-cover::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .cover-img {
@@ -273,7 +273,13 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  filter: brightness(0.85);
+  filter: brightness(0.9);
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.song-card:hover .cover-img {
+  transform: scale(1.03);
+  filter: brightness(0.95);
 }
 
 .cover-top {
@@ -295,44 +301,48 @@ body {
   font-weight: 700;
   letter-spacing: 1px;
   color: #ffffff;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  padding: 2px 8px;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 3px 9px;
+  border-radius: 6px;
 }
 
 .explicit-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   font-size: 10px;
   font-weight: 800;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .track-number {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: #ffffff;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  padding: 2px 8px;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 3px 9px;
+  border-radius: 6px;
 }
 
 .play-btn {
   position: absolute;
   bottom: 16px;
   right: 16px;
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: var(--pink);
   border: none;
@@ -341,9 +351,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(255, 42, 133, 0.45);
-  transition: transform 0.15s ease, background 0.2s ease;
+  box-shadow: 0 8px 24px var(--pink-glow);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease, box-shadow 0.2s ease;
   z-index: 2;
+}
+
+.play-btn:hover {
+  transform: scale(1.08);
+  background: var(--pink-hover);
+  box-shadow: 0 10px 28px rgba(255, 42, 133, 0.6);
 }
 
 .play-btn svg {
@@ -365,7 +381,7 @@ body {
 }
 
 .play-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.94);
 }
 
 .card-info {
@@ -390,19 +406,22 @@ body {
   color: var(--pink);
   background: rgba(255, 42, 133, 0.12);
   border: 1px solid rgba(255, 42, 133, 0.3);
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(255, 42, 133, 0.15);
 }
 
 .release-badge.muted {
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
 }
 
 .track-meta h3 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
 .track-meta p {
@@ -421,28 +440,36 @@ body {
 .playing-bars {
   display: none;
   align-items: flex-end;
-  gap: 2px;
-  height: 14px;
+  gap: 2.5px;
+  height: 12px;
 }
 
 .song-card.playing .playing-bars {
   display: flex;
 }
 
-/* ecualizador reactivo por javascript */
 .playing-bars span {
   width: 3px;
   background: var(--pink);
-  border-radius: 1px;
-  height: 3px;
-  transition: height 0.05s ease;
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--pink-glow);
+  animation: bounce 0.8s ease-in-out infinite alternate;
+}
+
+.playing-bars span:nth-child(1) { height: 4px; animation-delay: 0.1s; }
+.playing-bars span:nth-child(2) { height: 10px; animation-delay: 0.3s; }
+.playing-bars span:nth-child(3) { height: 6px; animation-delay: 0.5s; }
+
+@keyframes bounce {
+  0% { height: 3px; }
+  100% { height: 12px; }
 }
 
 .waveform, 
 #sp-progress-bar {
   width: 100%;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   cursor: pointer;
   margin-top: 14px;
@@ -450,34 +477,25 @@ body {
   overflow: hidden;
   touch-action: none;
   user-select: none;
+  transition: height 0.2s ease, background 0.2s ease;
+}
+
+.waveform:hover {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .waveform-progress {
   height: 100%;
   width: 0%;
-  background: var(--pink);
+  background: linear-gradient(90deg, var(--pink), #ff66ab);
   border-radius: 999px;
+  box-shadow: 0 0 10px var(--pink-glow);
   transition: width 0.1s linear;
 }
 
-.disclaimer-note {
-  margin: 40px auto 40px;
-  text-align: center;
-  max-width: 360px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-
-.disclaimer-note p {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
 footer {
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
   padding-bottom: 20px;
 }
@@ -487,6 +505,7 @@ footer {
   font-weight: 800;
   letter-spacing: 3px;
   color: var(--pink);
+  text-shadow: 0 0 12px var(--pink-glow);
   margin-bottom: 16px;
 }
 
@@ -505,7 +524,7 @@ footer {
   justify-content: center;
   padding: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border);
   transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 }
@@ -519,6 +538,7 @@ footer {
   border-color: var(--pink);
   background: rgba(255, 42, 133, 0.1);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 42, 133, 0.2);
 }
 
 footer p {
