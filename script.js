@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => { 
+Document.addEventListener('DOMContentLoaded', () => { 
   const cards = Array.from(document.querySelectorAll('.song-card'));
   const spotifyPlayer = document.getElementById('spotify-player');
   const spImg = document.getElementById('sp-img');
@@ -264,17 +264,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // cuenta atrás para Bareta
-  const baretaBadge = document.getElementById('bareta-countdown');
-  if (baretaBadge) {
-    const targetDate = new Date('2026-09-06T01:00:00').getTime();
+  // cuenta atrás general (bofeta y bareta)
+  function iniciarContador(elementId, targetDateString) {
+    const badge = document.getElementById(elementId);
+    if (!badge) return;
+
+    const targetDate = new Date(targetDateString).getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
       const diff = targetDate - now;
 
       if (diff <= 0) {
-        baretaBadge.textContent = '¡DISPONIBLE AHORA!';
+        badge.textContent = '¡DISPONIBLE AHORA!';
         return;
       }
 
@@ -283,12 +285,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      baretaBadge.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      badge.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
   }
+
+  iniciarContador('bofeta-countdown', '2026-09-08T00:00:00');
+  iniciarContador('bareta-countdown', '2026-09-06T01:00:00');
 
   // glitch hero title
   const heroTitle = document.querySelector('.hero-title.glitch');
