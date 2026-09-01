@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   animateAmbient();
 
-  // --- 2. SELECTOR DE PALETA DINÁMICA POR TARJETA ---
+  // --- 2. SELECTOR DE PALETA DINÁMICA & TILT HOLOGRÁFICO 3D ---
   const root = document.documentElement;
   function applySongTheme(card) {
     const accent = card.getAttribute('data-accent') || '#ff2a85';
@@ -69,45 +69,34 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAudio = null;
   let isDraggingSp = false;
 
-  // --- 3. WEB AUDIO API (Visualizador de frecuencias reales) ---
-  let audioCtx = null;
-  let analyser = null;
-  let audioSourceNodes = new Map();
-  let dataArray = null;
-  let animationFrameId = null;
+  // Aplicar efecto de profundidad 3D en las tarjetas
+  cards.forEach(card => {
+    const cover = card.querySelector('.card-cover');
+    if (!cover) return;
 
-  function initWebAudioAPI(audioElement) {
-    if (!audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContext();
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 64;
-      dataArray = new Uint8Array(analyser.frequencyBinCount);
-    }
-    if (!audioSourceNodes.has(audioElement)) {
-      const source = audioCtx.createMediaElementSource(audioElement);
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
-      audioSourceNodes.set(audioElement, source);
-    }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-  }
-
-  function renderRealVisualizer() {
-    if (!analyser || !activeCard) return;
-    analyser.getByteFrequencyData(dataArray);
-
-    const bars = activeCard.querySelectorAll('.playing-bars span');
-    bars.forEach((bar, index) => {
-      const val = dataArray[index * 4] || 0;
-      const heightPx = Math.max(3, (val / 255) * 14);
-      bar.style.height = `${heightPx}px`;
+    card.addEventListener('pointermove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = -((y - centerY) / centerY) * 8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+      
+      cover.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     });
 
-    animationFrameId = requestAnimationFrame(renderRealVisualizer);
-  }
+    card.addEventListener('pointerleave', () => {
+      cover.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      cover.style.transition = 'transform 0.5s ease';
+    });
+    
+    card.addEventListener('pointerenter', () => {
+      cover.style.transition = 'none';
+    });
+  });
 
   function formatTime(seconds) { 
     if (isNaN(seconds) || !isFinite(seconds) || seconds <= 0) return '0:00'; 
@@ -126,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (spotifyPlayer) {
       spotifyPlayer.classList.remove('is-playing');
     }
-    cancelAnimationFrame(animationFrameId);
   }
 
   function updateUI() {
@@ -162,8 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!audio || !audio.src) return;
 
-    initWebAudioAPI(audio);
-
     if (activeAudio === audio) {
       if (!audio.paused) {
         pauseCurrent();
@@ -172,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
           card.classList.add('playing');
           if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
           applySongTheme(card);
-          renderRealVisualizer();
         }).catch(err => console.log('error reproduccion:', err));
       }
       return;
@@ -199,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.play().then(() => {
       card.classList.add('playing');
       if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
-      renderRealVisualizer();
     }).catch(err => console.log('error audio:', err));
   }
 
@@ -244,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (activeAudio === audio) {
         card.classList.remove('playing');
         if (spotifyPlayer) spotifyPlayer.classList.remove('is-playing');
-        cancelAnimationFrame(animationFrameId);
       }
     });
 
