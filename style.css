@@ -229,7 +229,8 @@ body {
   border-color: rgba(255, 255, 255, 0.18);
 }
 
-.song-card.playing {
+.song-card.playing,
+.song-card.is-playing {
   border-color: var(--pink);
   box-shadow: 0 0 30px rgba(255, 42, 133, 0.25), inset 0 0 15px rgba(255, 42, 133, 0.05);
 }
@@ -372,11 +373,13 @@ body {
   display: none;
 }
 
-.song-card.playing .play-btn .icon-play {
+.song-card.playing .play-btn .icon-play,
+.song-card.is-playing .play-btn .icon-play {
   display: none;
 }
 
-.song-card.playing .play-btn .icon-pause {
+.song-card.playing .play-btn .icon-pause,
+.song-card.is-playing .play-btn .icon-pause {
   display: block;
 }
 
@@ -394,9 +397,20 @@ body {
 .title-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 2px;
+}
+
+.title-row h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .release-badge {
@@ -409,6 +423,8 @@ body {
   padding: 3px 8px;
   border-radius: 6px;
   box-shadow: 0 0 10px rgba(255, 42, 133, 0.15);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .release-badge.muted {
@@ -416,12 +432,6 @@ body {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: none;
-}
-
-.track-meta h3 {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
 }
 
 .track-meta p {
@@ -444,7 +454,8 @@ body {
   height: 12px;
 }
 
-.song-card.playing .playing-bars {
+.song-card.playing .playing-bars,
+.song-card.is-playing .playing-bars {
   display: flex;
 }
 
