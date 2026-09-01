@@ -41,20 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   animateAmbient();
 
-  // --- 2. SELECTOR DE PALETA DINÁMICA & TILT HOLOGRÁFICO 3D ---
+  // --- 2. CONTROL DE AUDIO INDEPENDIENTE POR TARJETA ---
   const root = document.documentElement;
   function applySongTheme(card) {
-    const accent = card.getAttribute('data-accent') || '#ff2a85';
+    const accent = '#ff2a85';
     root.style.setProperty('--pink', accent);
     root.style.setProperty('--pink-glow', `${accent}66`);
     orbs[0].color = `${accent}22`; 
   }
 
   const cards = Array.from(document.querySelectorAll('.song-card'));
-  let activeCard = null; 
   let activeAudio = null;
+  let activeCard = null;
 
-  // Efecto de profundidad 3D en las tarjetas
+  // Efecto 3D en las tarjetas
   cards.forEach(card => {
     const cover = card.querySelector('.card-cover');
     if (!cover) return;
@@ -63,14 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
-      const rotateX = -((y - centerY) / centerY) * 8;
-      const rotateY = ((x - centerX) / centerX) * 8;
-      
-      cover.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      const rotateX = -((y - centerY) / centerY) * 6;
+      const rotateY = ((x - centerX) / centerX) * 6;
+      cover.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
     });
 
     card.addEventListener('pointerleave', () => {
@@ -90,11 +87,17 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${min}:${sec < 10 ? '0' : ''}${sec}`; 
   }
 
-  function pauseAll() {
+  function pauseAllTracks() {
     cards.forEach(c => {
       const aud = c.querySelector('audio');
       if (aud) aud.pause();
       c.classList.remove('playing');
+      
+      // Sincronizar botones internos de control
+      const pauseIcon = c.querySelector('.play-pause-track-btn .icon-pause');
+      const playIcon = c.querySelector('.play-pause-track-btn .icon-play');
+      if (pauseIcon) pauseIcon.style.display = 'none';
+      if (playIcon) playIcon.style.display = 'block';
     });
     activeAudio = null;
     activeCard = null;
@@ -102,6 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   cards.forEach((card, index) => {
     const playBtn = card.querySelector('.play-btn');
+    const miniPlayBtn = card.querySelector('.play-pause-track-btn');
+    const prevBtn = card.querySelector('.prev-track-btn');
+    const nextBtn = card.querySelector('.next-track-btn');
+    
     const audio = card.querySelector('audio');
     const timeText = card.querySelector('.time-text');
     const waveformContainer = card.querySelector('.waveform');
@@ -117,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     audio.addEventListener('loadedmetadata', () => {
-      if (timeText) {
-        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeText && !audio.currentTime) {
+        timeText.textContent = `${formatTime(audio.duration)}`;
       }
     });
 
@@ -132,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
           timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
         }
         if (progressBar) {
-          progressBar.style.width = `${pct}%`;
+          progressBar.style.width = `${pct}`;
         }
       }
     });
@@ -140,69 +147,85 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.addEventListener('ended', () => {
       card.classList.remove('playing');
       if (progressBar) progressBar.style.width = '0%';
-      if (timeText) timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeText) timeText.textContent = formatTime(audio.duration);
       
-      // Auto-reproducir la siguiente pista si existe
+      // Pasar a la siguiente pista automáticamente
       if (index + 1 < cards.length) {
-        const nextCard = cards[index + 1];
-        const nextAudio = nextCard.querySelector('audio');
-        if (nextAudio) {
-          pauseAll();
-          activeCard = nextCard;
-          activeAudio = nextAudio;
-          applySongTheme(nextCard);
-          nextCard.classList.add('playing');
-          nextAudio.play().catch(err => console.log('error:', err));
-        }
+        playTrack(cards[index + 1]);
+      } else {
+        pauseAllTracks();
       }
     });
 
-    if (playBtn) {
-      playBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    function playTrack(targetCard) {
+      pauseAllTracks();
+      const targetAudio = targetCard.querySelector('audio');
+      if (!targetAudio) return;
 
-        if (activeAudio === audio) {
-          if (!audio.paused) {
-            audio.pause();
-            card.classList.remove('playing');
-            activeAudio = null;
-            activeCard = null;
-          } else {
-            audio.play().then(() => {
-              card.classList.add('playing');
-              applySongTheme(card);
-            }).catch(err => console.log('error:', err));
-          }
+      activeCard = targetCard;
+      activeAudio = targetAudio;
+      applySongTheme(targetCard);
+      targetCard.classList.add('playing');
+
+      const pIcon = targetCard.querySelector('.play-pause-track-btn .icon-play');
+      const sIcon = targetCard.querySelector('.play-pause-track-btn .icon-pause');
+      if (pIcon) pIcon.style.display = 'none';
+      if (sIcon) sIcon.style.display = 'block';
+
+      targetAudio.play().catch(err => console.log('Error de reproducción:', err));
+    }
+
+    function togglePlay() {
+      if (activeAudio === audio) {
+        if (!audio.paused) {
+          audio.pause();
+          card.classList.remove('playing');
+          const pIcon = card.querySelector('.play-pause-track-btn .icon-play');
+          const sIcon = card.querySelector('.play-pause-track-btn .icon-pause');
+          if (pIcon) pIcon.style.display = 'block';
+          if (sIcon) sIcon.style.display = 'none';
+          activeAudio = null;
+          activeCard = null;
         } else {
-          pauseAll();
-          activeCard = card;
-          activeAudio = audio;
-          applySongTheme(card);
-          audio.play().then(() => {
-            card.classList.add('playing');
-          }).catch(err => console.log('error:', err));
+          playTrack(card);
         }
+      } else {
+        playTrack(card);
+      }
+    }
+
+    if (playBtn) playBtn.addEventListener('click', (e) => { e.preventDefault(); togglePlay(); });
+    if (miniPlayBtn) miniPlayBtn.addEventListener('click', (e) => { e.preventDefault(); togglePlay(); });
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const prevIndex = (index - 1 + cards.length) % cards.length;
+        playTrack(cards[prevIndex]);
       });
     }
 
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nextIndex = (index + 1) % cards.length;
+        playTrack(cards[nextIndex]);
+      });
+    }
+
+    // Funcionalidad de click/touch en la barra de onda para buscar posición
     if (waveformContainer) {
       let isDragging = false;
-
       const seek = (e) => {
         if (!audio.duration) return;
         const rect = waveformContainer.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const offsetX = clientX - rect.left;
         const pct = Math.max(0, Math.min(1, offsetX / rect.width));
         audio.currentTime = pct * audio.duration;
 
         if (activeAudio !== audio) {
-          pauseAll();
-          activeCard = card;
-          activeAudio = audio;
-          applySongTheme(card);
-          audio.play().catch(err => console.log('error:', err));
-          card.classList.add('playing');
+          playTrack(card);
         }
       };
 
@@ -211,11 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
         waveformContainer.setPointerCapture(e.pointerId);
         seek(e);
       });
-
       waveformContainer.addEventListener('pointermove', (e) => {
         if (isDragging) seek(e);
       });
-
       waveformContainer.addEventListener('pointerup', (e) => {
         if (isDragging) {
           isDragging = false;
@@ -229,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function iniciarContador(elementId, targetDateString) {
     const badge = document.getElementById(elementId);
     if (!badge) return;
-
     const targetDate = new Date(targetDateString).getTime();
 
     function updateCountdown() {
@@ -262,8 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function runGlitch() {
       heroTitle.classList.add('glitch-active');
       setTimeout(() => heroTitle.classList.remove('glitch-active'), 200);
-      const randomInterval = Math.floor(Math.random() * 2000) + 4000;
-      setTimeout(runGlitch, randomInterval);
+      setTimeout(runGlitch, Math.floor(Math.random() * 2000) + 4000);
     }
     setTimeout(runGlitch, 4000);
   }
