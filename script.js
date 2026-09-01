@@ -397,3 +397,4 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(runGlitch, 4000);
   }
 });
+ 
