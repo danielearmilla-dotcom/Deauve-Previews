@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeIndex = -1;
   let activeCard = null; 
   let activeAudio = null;
-  let isDragging = false;
+  let isDraggingSp = false;
 
   function formatTime(seconds) { 
     if (isNaN(seconds) || !isFinite(seconds) || seconds <= 0) return '0:00'; 
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     audio.addEventListener('timeupdate', () => {
-      if (activeAudio === audio && !isDragging) {
+      if (activeAudio === audio && !isDraggingSp) {
         updateUI();
       }
     });
@@ -159,16 +159,43 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // funcionalidad de arrastre en las barras de las tarjetas (.waveform)
     if (waveformContainer) {
-      waveformContainer.addEventListener('click', (e) => {
+      let isDraggingWaveform = false;
+
+      const seekCard = (e) => {
         if (!audio.duration) return;
         const rect = waveformContainer.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const pct = clickX / rect.width;
+        const offsetX = e.clientX - rect.left;
+        const pct = Math.max(0, Math.min(1, offsetX / rect.width));
         audio.currentTime = pct * audio.duration;
+
         if (activeAudio !== audio) {
           playTrack(index);
+        } else {
+          updateUI();
         }
+      };
+
+      waveformContainer.addEventListener('pointerdown', (e) => {
+        isDraggingWaveform = true;
+        waveformContainer.setPointerCapture(e.pointerId);
+        seekCard(e);
+      });
+
+      waveformContainer.addEventListener('pointermove', (e) => {
+        if (isDraggingWaveform) seekCard(e);
+      });
+
+      waveformContainer.addEventListener('pointerup', (e) => {
+        if (isDraggingWaveform) {
+          isDraggingWaveform = false;
+          waveformContainer.releasePointerCapture(e.pointerId);
+        }
+      });
+
+      waveformContainer.addEventListener('pointercancel', (e) => {
+        isDraggingWaveform = false;
       });
     }
 
@@ -204,41 +231,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function seek(e) {
+  // funcionalidad de arrastre en la barra inferior de spotify
+  function seekSpotify(e) {
     if (!activeAudio || !activeAudio.duration || !spProgressBar) return;
     const rect = spProgressBar.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-    const offsetX = clientX - rect.left;
+    const offsetX = e.clientX - rect.left;
     const pct = Math.max(0, Math.min(1, offsetX / rect.width));
     activeAudio.currentTime = pct * activeAudio.duration;
     updateUI();
   }
 
   if (spProgressBar) {
-    spProgressBar.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      seek(e);
+    spProgressBar.addEventListener('pointerdown', (e) => {
+      isDraggingSp = true;
+      spProgressBar.setPointerCapture(e.pointerId);
+      seekSpotify(e);
     });
 
-    window.addEventListener('mousemove', (e) => {
-      if (isDragging) seek(e);
+    spProgressBar.addEventListener('pointermove', (e) => {
+      if (isDraggingSp) seekSpotify(e);
     });
 
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
+    spProgressBar.addEventListener('pointerup', (e) => {
+      if (isDraggingSp) {
+        isDraggingSp = false;
+        spProgressBar.releasePointerCapture(e.pointerId);
+      }
     });
 
-    spProgressBar.addEventListener('touchstart', (e) => {
-      isDragging = true;
-      seek(e);
-    });
-
-    window.addEventListener('touchmove', (e) => {
-      if (isDragging) seek(e);
-    });
-
-    window.addEventListener('touchend', () => {
-      isDragging = false;
+    spProgressBar.addEventListener('pointercancel', (e) => {
+      isDraggingSp = false;
     });
   }
 
