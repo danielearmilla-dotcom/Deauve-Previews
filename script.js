@@ -1,4 +1,4 @@
-Document.addEventListener('DOMContentLoaded', () => { 
+document.addEventListener('DOMContentLoaded', () => { 
 
   // --- 1. MODO AMBIENTE REACTIVO (Canvas de orbes flotantes) ---
   const canvas = document.createElement('canvas');
