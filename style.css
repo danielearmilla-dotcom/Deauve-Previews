@@ -422,27 +422,20 @@ body {
   display: none;
   align-items: flex-end;
   gap: 2px;
-  height: 12px;
+  height: 14px;
 }
 
 .song-card.playing .playing-bars {
   display: flex;
 }
 
+/* ecualizador reactivo por javascript */
 .playing-bars span {
   width: 3px;
   background: var(--pink);
   border-radius: 1px;
-  animation: bounce 0.8s ease-in-out infinite alternate;
-}
-
-.playing-bars span:nth-child(1) { height: 4px; animation-delay: 0.1s; }
-.playing-bars span:nth-child(2) { height: 10px; animation-delay: 0.3s; }
-.playing-bars span:nth-child(3) { height: 6px; animation-delay: 0.5s; }
-
-@keyframes bounce {
-  0% { height: 3px; }
-  100% { height: 12px; }
+  height: 3px;
+  transition: height 0.05s ease;
 }
 
 .waveform, 
