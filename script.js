@@ -18,6 +18,48 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAudio = null;
   let isDraggingSp = false;
 
+  // Web Audio API para ecualizador reactivo real
+  let audioCtx = null;
+  let analyser = null;
+  let sourceNodeMap = new Map();
+  let dataArray = null;
+  let animId = null;
+
+  function initAudioContext(audio) {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 32;
+      dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    if (!sourceNodeMap.has(audio)) {
+      const source = audioCtx.createMediaElementSource(audio);
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      sourceNodeMap.set(audio, source);
+    }
+  }
+
+  function renderVisualizer() {
+    if (analyser && activeCard && activeCard.classList.contains('playing')) {
+      analyser.getByteFrequencyData(dataArray);
+      const bars = activeCard.querySelectorAll('.playing-bars span');
+      if (bars.length >= 3) {
+        const v1 = Math.max(3, (dataArray[1] / 255) * 14);
+        const v2 = Math.max(3, (dataArray[3] / 255) * 14);
+        const v3 = Math.max(3, (dataArray[5] / 255) * 14);
+
+        bars[0].style.height = `${v1}px`;
+        bars[1].style.height = `${v2}px`;
+        bars[2].style.height = `${v3}px`;
+      }
+      animId = requestAnimationFrame(renderVisualizer);
+    }
+  }
+
   function formatTime(seconds) { 
     if (isNaN(seconds) || !isFinite(seconds) || seconds <= 0) return '0:00'; 
     const min = Math.floor(seconds / 60); 
@@ -34,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } 
     if (spotifyPlayer) {
       spotifyPlayer.classList.remove('is-playing');
+    }
+    if (animId) {
+      cancelAnimationFrame(animId);
     }
   }
 
@@ -76,9 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!audio.paused) {
         pauseCurrent();
       } else {
+        initAudioContext(audio);
         audio.play().then(() => {
           card.classList.add('playing');
           if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
+          renderVisualizer();
         }).catch(err => console.log('error al reproducir:', err));
       }
       return;
@@ -100,9 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (spotifyPlayer) spotifyPlayer.classList.add('active');
 
+    initAudioContext(audio);
     audio.play().then(() => {
       card.classList.add('playing');
       if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
+      renderVisualizer();
     }).catch(err => {
       console.log('error al reproducir audio:', err);
     });
@@ -159,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // funcionalidad de arrastre en las barras de las tarjetas (.waveform)
     if (waveformContainer) {
       let isDraggingWaveform = false;
 
@@ -208,7 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }); 
 
-  // controles del reproductor inferior estilo spotify
   if (spPlayBtn) {
     spPlayBtn.addEventListener('click', () => {
       if (activeIndex !== -1) {
@@ -231,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // funcionalidad de arrastre en la barra inferior de spotify
   function seekSpotify(e) {
     if (!activeAudio || !activeAudio.duration || !spProgressBar) return;
     const rect = spProgressBar.getBoundingClientRect();
@@ -264,21 +310,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // glitch intermitente exclusivo para el título principal
-  const heroTitle = document.querySelector('.hero-title.glitch');
+  // cuenta atrás exclusiva para Bareta
+  const baretaBadge = document.getElementById('bareta-countdown');
+  if (baretaBadge) {
+    const targetDate = new Date('2026-09-09T00:00:00').getTime();
 
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        baretaBadge.textContent = '¡DISPONIBLE AHÓRA!';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      baretaBadge.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  }
+
+  // glitch hero title
+  const heroTitle = document.querySelector('.hero-title.glitch');
   if (heroTitle) {
     function runGlitch() {
       heroTitle.classList.add('glitch-active');
-
-      setTimeout(() => {
-        heroTitle.classList.remove('glitch-active');
-      }, 200);
-
+      setTimeout(() => heroTitle.classList.remove('glitch-active'), 200);
       const randomInterval = Math.floor(Math.random() * 2000) + 4000;
       setTimeout(runGlitch, randomInterval);
     }
-
     setTimeout(runGlitch, 4000);
   }
 });
