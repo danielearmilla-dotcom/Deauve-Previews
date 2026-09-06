@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => { 
+Document.addEventListener('DOMContentLoaded', () => { 
 
   // --- 1. MODO AMBIENTE REACTIVO (Canvas de orbes flotantes) ---
   const canvas = document.createElement('canvas');
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   iniciarContador('bofeta-countdown', '2026-09-08T00:00:00');
-  iniciarContador('bareta-countdown', '2026-09-06T01:00:00');
+  // Se eliminó el contador de bareta para conservar el diseño de enlace fijo "DISPONIBLE EN SPOTIFY"
 
   const heroTitle = document.querySelector('.hero-title.glitch');
   if (heroTitle) {
