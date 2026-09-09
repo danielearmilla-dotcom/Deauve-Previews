@@ -153,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!audio) return;
 
-    // Definir límites de duración según la pista
+    // Definir límites de duración exactos (Bofetá a 33s, TEMA3 a 29s)
     function getMaxDuration() {
-      if (trackId === 'bofeta') return 32;
+      if (trackId === 'bofeta') return 33;
       if (trackId === 'pecado') return 29;
       return audio.duration;
     }
