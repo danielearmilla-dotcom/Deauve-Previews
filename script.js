@@ -154,14 +154,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audio.addEventListener('loadedmetadata', () => {
       if (timeText && audio.duration) {
-        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+        let displayDuration = audio.duration;
+        if (card.getAttribute('data-id') === 'pecado') {
+          displayDuration = 29; // Límite visual para la pista 4
+        }
+        timeText.textContent = `0:00 / ${formatTime(displayDuration)}`;
       }
     });
 
     audio.addEventListener('timeupdate', () => {
       if (activeAudio === audio && audio.duration) {
-        const current = audio.currentTime;
-        const duration = audio.duration;
+        let current = audio.currentTime;
+        let duration = audio.duration;
+
+        // Corte estricto para la pista 4 (data-id="pecado")
+        if (card.getAttribute('data-id') === 'pecado') {
+          const maxSeconds = 29; 
+          if (current >= maxSeconds) {
+            audio.pause();
+            audio.currentTime = 0;
+            pauseCurrent();
+            if (progressBar) progressBar.style.width = '0%';
+            if (timeText) timeText.textContent = `0:00 / ${formatTime(maxSeconds)}`;
+            return;
+          }
+          duration = maxSeconds; 
+        }
+
         const pct = (current / duration) * 100;
 
         if (progressBar) {
@@ -181,7 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
-      if (timeText && audio.duration) timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      let displayDuration = audio.duration;
+      if (card.getAttribute('data-id') === 'pecado') displayDuration = 29;
+      
+      if (timeText && audio.duration) timeText.textContent = `0:00 / ${formatTime(displayDuration)}`;
       if (progressBar) progressBar.style.width = '0%';
 
       if (index + 1 < cards.length) {
@@ -200,8 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!audio.duration) return;
         const rect = waveformContainer.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
-        const pct = Math.max(0, Math.min(1, offsetX / rect.width));
-        audio.currentTime = pct * audio.duration;
+        let pct = Math.max(0, Math.min(1, offsetX / rect.width));
+        
+        let maxDuration = audio.duration;
+        if (card.getAttribute('data-id') === 'pecado') maxDuration = 29;
+
+        audio.currentTime = pct * maxDuration;
 
         if (activeAudio !== audio) {
           playTrack(index);
