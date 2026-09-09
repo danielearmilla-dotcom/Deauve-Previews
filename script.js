@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const audio = card.querySelector('audio'); 
     const timeText = card.querySelector('.time-text'); 
     const waveformContainer = card.querySelector('.waveform');
+    const trackId = card.getAttribute('data-id');
 
     let progressBar = null;
     if (waveformContainer) {
@@ -152,12 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!audio) return;
 
+    // Definir límites de duración según la pista
+    function getMaxDuration() {
+      if (trackId === 'bofeta') return 32;
+      if (trackId === 'pecado') return 29;
+      return audio.duration;
+    }
+
     audio.addEventListener('loadedmetadata', () => {
       if (timeText && audio.duration) {
-        let displayDuration = audio.duration;
-        if (card.getAttribute('data-id') === 'pecado') {
-          displayDuration = 29; // Límite visual para la pista 4
-        }
+        let displayDuration = getMaxDuration();
         timeText.textContent = `0:00 / ${formatTime(displayDuration)}`;
       }
     });
@@ -165,29 +170,24 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.addEventListener('timeupdate', () => {
       if (activeAudio === audio && audio.duration) {
         let current = audio.currentTime;
-        let duration = audio.duration;
+        let maxSeconds = getMaxDuration();
 
-        // Corte estricto para la pista 4 (data-id="pecado")
-        if (card.getAttribute('data-id') === 'pecado') {
-          const maxSeconds = 29; 
-          if (current >= maxSeconds) {
-            audio.pause();
-            audio.currentTime = 0;
-            pauseCurrent();
-            if (progressBar) progressBar.style.width = '0%';
-            if (timeText) timeText.textContent = `0:00 / ${formatTime(maxSeconds)}`;
-            return;
-          }
-          duration = maxSeconds; 
+        if (current >= maxSeconds) {
+          audio.pause();
+          audio.currentTime = 0;
+          pauseCurrent();
+          if (progressBar) progressBar.style.width = '0%';
+          if (timeText) timeText.textContent = `0:00 / ${formatTime(maxSeconds)}`;
+          return;
         }
 
-        const pct = (current / duration) * 100;
+        const pct = (current / maxSeconds) * 100;
 
         if (progressBar) {
           progressBar.style.width = `${pct}%`;
         }
         if (timeText) {
-          timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+          timeText.textContent = `${formatTime(current)} / ${formatTime(maxSeconds)}`;
         }
       }
     });
@@ -200,10 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
-      let displayDuration = audio.duration;
-      if (card.getAttribute('data-id') === 'pecado') displayDuration = 29;
+      let displayDuration = getMaxDuration();
       
-      if (timeText && audio.duration) timeText.textContent = `0:00 / ${formatTime(displayDuration)}`;
+      if (timeText) timeText.textContent = `0:00 / ${formatTime(displayDuration)}`;
       if (progressBar) progressBar.style.width = '0%';
 
       if (index + 1 < cards.length) {
@@ -224,9 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const offsetX = e.clientX - rect.left;
         let pct = Math.max(0, Math.min(1, offsetX / rect.width));
         
-        let maxDuration = audio.duration;
-        if (card.getAttribute('data-id') === 'pecado') maxDuration = 29;
-
+        let maxDuration = getMaxDuration();
         audio.currentTime = pct * maxDuration;
 
         if (activeAudio !== audio) {
