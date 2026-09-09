@@ -1,4 +1,4 @@
-Document.addEventListener('DOMContentLoaded', () => { 
+document.addEventListener('DOMContentLoaded', () => { 
 
   // --- 1. MODO AMBIENTE REACTIVO (Canvas de orbes flotantes) ---
   const canvas = document.createElement('canvas');
@@ -51,23 +51,9 @@ Document.addEventListener('DOMContentLoaded', () => {
   }
 
   const cards = Array.from(document.querySelectorAll('.song-card'));
-  const spotifyPlayer = document.getElementById('spotify-player');
-  const spImg = document.getElementById('sp-img');
-  const spTitle = document.getElementById('sp-title');
-  const spArtist = document.getElementById('sp-artist');
-  const spPlayBtn = document.getElementById('sp-play-btn');
-  const spPrevBtn = document.getElementById('sp-prev-btn');
-  const spNextBtn = document.getElementById('sp-next-btn');
-  const spCurrentTime = document.getElementById('sp-current-time');
-  const spTotalTime = document.getElementById('sp-total-time');
-  const spProgressBar = document.getElementById('sp-progress-bar');
-  const spProgressFill = document.getElementById('sp-progress-fill');
-  const spProgressKnob = document.getElementById('sp-progress-knob');
-
   let activeIndex = -1;
   let activeCard = null; 
   let activeAudio = null;
-  let isDraggingSp = false;
 
   // Aplicar efecto de profundidad 3D en las tarjetas
   cards.forEach(card => {
@@ -112,34 +98,6 @@ Document.addEventListener('DOMContentLoaded', () => {
     if (activeCard) { 
       activeCard.classList.remove('playing'); 
     } 
-    if (spotifyPlayer) {
-      spotifyPlayer.classList.remove('is-playing');
-    }
-  }
-
-  function updateUI() {
-    if (!activeAudio || isNaN(activeAudio.duration) || !activeAudio.duration) return;
-
-    const current = activeAudio.currentTime;
-    const duration = activeAudio.duration;
-    const pct = (current / duration) * 100;
-
-    if (spProgressFill) spProgressFill.style.width = `${pct}%`;
-    if (spProgressKnob) spProgressKnob.style.left = `${pct}%`;
-
-    if (spCurrentTime) spCurrentTime.textContent = formatTime(current);
-    if (spTotalTime) spTotalTime.textContent = formatTime(duration);
-
-    if (activeCard) {
-      const timeText = activeCard.querySelector('.time-text');
-      if (timeText) {
-        timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
-      }
-      const progressBar = activeCard.querySelector('.waveform-progress');
-      if (progressBar) {
-        progressBar.style.width = `${pct}%`;
-      }
-    }
   }
 
   function playTrack(index) { 
@@ -152,11 +110,11 @@ Document.addEventListener('DOMContentLoaded', () => {
 
     if (activeAudio === audio) {
       if (!audio.paused) {
-        pauseCurrent();
+        audio.pause();
+        card.classList.remove('playing');
       } else {
         audio.play().then(() => {
           card.classList.add('playing');
-          if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
           applySongTheme(card);
         }).catch(err => console.log('error reproduccion:', err));
       }
@@ -169,21 +127,10 @@ Document.addEventListener('DOMContentLoaded', () => {
     activeCard = card;
     activeAudio = audio;
 
-    const coverImg = card.querySelector('.cover-img');
-    const titleEl = card.querySelector('.track-meta h3');
-    const artistEl = card.querySelector('.track-meta p');
-
-    if (spImg && coverImg) spImg.src = coverImg.src;
-    if (spTitle && titleEl) spTitle.textContent = titleEl.textContent;
-    if (spArtist && artistEl) spArtist.textContent = artistEl.textContent;
-
-    if (spotifyPlayer) spotifyPlayer.classList.add('active');
-
     applySongTheme(card);
 
     audio.play().then(() => {
       card.classList.add('playing');
-      if (spotifyPlayer) spotifyPlayer.classList.add('is-playing');
     }).catch(err => console.log('error audio:', err));
   }
 
@@ -198,42 +145,43 @@ Document.addEventListener('DOMContentLoaded', () => {
       waveformContainer.innerHTML = '';
       progressBar = document.createElement('div');
       progressBar.className = 'waveform-progress';
+      progressBar.style.cssText = 'width: 0%; height: 100%; background: var(--pink, #ff2a85); position: absolute; top: 0; left: 0; pointer-events: none; transition: width 0.1s linear;';
+      waveformContainer.style.position = 'relative';
       waveformContainer.appendChild(progressBar);
-    }
-
-    if (timeText) {
-      const defaultTime = timeText.textContent.trim() || '0:00';
-      if (audio && audio.duration) {
-        timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
-      } else {
-        timeText.textContent = `0:00 / ${defaultTime}`;
-      }
     }
 
     if (!audio) return;
 
     audio.addEventListener('loadedmetadata', () => {
-      if (timeText) {
+      if (timeText && audio.duration) {
         timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
       }
     });
 
     audio.addEventListener('timeupdate', () => {
-      if (activeAudio === audio && !isDraggingSp) {
-        updateUI();
+      if (activeAudio === audio && audio.duration) {
+        const current = audio.currentTime;
+        const duration = audio.duration;
+        const pct = (current / duration) * 100;
+
+        if (progressBar) {
+          progressBar.style.width = `${pct}%`;
+        }
+        if (timeText) {
+          timeText.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+        }
       }
     });
 
     audio.addEventListener('pause', () => {
       if (activeAudio === audio) {
         card.classList.remove('playing');
-        if (spotifyPlayer) spotifyPlayer.classList.remove('is-playing');
       }
     });
 
     audio.addEventListener('ended', () => {
       pauseCurrent();
-      if (timeText) timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
+      if (timeText && audio.duration) timeText.textContent = `0:00 / ${formatTime(audio.duration)}`;
       if (progressBar) progressBar.style.width = '0%';
 
       if (index + 1 < cards.length) {
@@ -257,8 +205,6 @@ Document.addEventListener('DOMContentLoaded', () => {
 
         if (activeAudio !== audio) {
           playTrack(index);
-        } else {
-          updateUI();
         }
       };
 
@@ -289,86 +235,7 @@ Document.addEventListener('DOMContentLoaded', () => {
     }
   }); 
 
-  if (spPlayBtn) {
-    spPlayBtn.addEventListener('click', () => {
-      if (activeIndex !== -1) {
-        playTrack(activeIndex);
-      } else if (cards.length > 0) {
-        playTrack(0);
-      }
-    });
-  }
-
-  if (spPrevBtn) {
-    spPrevBtn.addEventListener('click', () => {
-      if (activeIndex > 0) playTrack(activeIndex - 1);
-    });
-  }
-
-  if (spNextBtn) {
-    spNextBtn.addEventListener('click', () => {
-      if (activeIndex + 1 < cards.length) playTrack(activeIndex + 1);
-    });
-  }
-
-  function seekSpotify(e) {
-    if (!activeAudio || !activeAudio.duration || !spProgressBar) return;
-    const rect = spProgressBar.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const pct = Math.max(0, Math.min(1, offsetX / rect.width));
-    activeAudio.currentTime = pct * activeAudio.duration;
-    updateUI();
-  }
-
-  if (spProgressBar) {
-    spProgressBar.addEventListener('pointerdown', (e) => {
-      isDraggingSp = true;
-      spProgressBar.setPointerCapture(e.pointerId);
-      seekSpotify(e);
-    });
-
-    spProgressBar.addEventListener('pointermove', (e) => {
-      if (isDraggingSp) seekSpotify(e);
-    });
-
-    spProgressBar.addEventListener('pointerup', (e) => {
-      if (isDraggingSp) {
-        isDraggingSp = false;
-        spProgressBar.releasePointerCapture(e.pointerId);
-      }
-    });
-  }
-
-  function iniciarContador(elementId, targetDateString) {
-    const badge = document.getElementById(elementId);
-    if (!badge) return;
-
-    const targetDate = new Date(targetDateString).getTime();
-
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const diff = targetDate - now;
-
-      if (diff <= 0) {
-        badge.textContent = '¡DISPONIBLE AHORA!';
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      badge.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  }
-
-  // Mantenemos activo el contador de Bofetá
-  iniciarContador('bofeta-countdown', '2026-09-08T00:00:00');
-
+  // Glitch para el título principal
   const heroTitle = document.querySelector('.hero-title.glitch');
   if (heroTitle) {
     function runGlitch() {
